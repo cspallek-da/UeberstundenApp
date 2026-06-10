@@ -6,6 +6,27 @@ function zeitInMinuten(zeit) {
     return parseInt(teile[0]) * 60 + parseInt(teile[1]);
 }
 
+function istUhrzeitGueltig(zeit) {
+    return /^([01]\d|2[0-3]):[0-5]\d$/.test(zeit);
+}
+
+function nachtragZeitInStunden(wert) {
+    const sauber = wert.trim();
+    const negativ = sauber.startsWith("-");
+    const ohneMinus = negativ ? sauber.substring(1) : sauber;
+
+    if (!/^\d{1,3}:[0-5]\d$/.test(ohneMinus)) {
+        return null;
+    }
+
+    const teile = ohneMinus.split(":");
+    const stunden = parseInt(teile[0]);
+    const minuten = parseInt(teile[1]);
+
+    const dezimal = stunden + minuten / 60;
+    return negativ ? -dezimal : dezimal;
+}
+
 function formatZeit(stunden) {
     const negativ = stunden < 0;
     const gesamtMinuten = Math.round(Math.abs(stunden) * 60);
@@ -17,14 +38,19 @@ function formatZeit(stunden) {
 
 function speichern() {
     const datum = document.getElementById("datum").value;
-    const kommen = document.getElementById("kommen").value;
-    const gehen = document.getElementById("gehen").value;
+    const kommen = document.getElementById("kommen").value.trim();
+    const gehen = document.getElementById("gehen").value.trim();
     const pause = parseInt(document.getElementById("pause").value);
     const sollzeit = parseFloat(document.getElementById("sollzeit").value);
     const bemerkung = document.getElementById("bemerkung").value;
 
     if (!datum || !kommen || !gehen || isNaN(pause) || isNaN(sollzeit)) {
         alert("Bitte Datum, Kommen, Gehen, Pause und Sollzeit ausfüllen.");
+        return;
+    }
+
+    if (!istUhrzeitGueltig(kommen) || !istUhrzeitGueltig(gehen)) {
+        alert("Bitte Uhrzeiten im Format HH:MM eingeben, z.B. 09:00 oder 16:25.");
         return;
     }
 
@@ -68,11 +94,18 @@ function speichern() {
 
 function monatsNachtragSpeichern() {
     const monat = document.getElementById("nachtragMonat").value;
-    const stunden = parseFloat(document.getElementById("nachtragStunden").value);
+    const zeit = document.getElementById("nachtragZeit").value;
     const bemerkung = document.getElementById("nachtragBemerkung").value;
 
-    if (!monat || isNaN(stunden)) {
-        alert("Bitte Monat und Überstunden eingeben.");
+    if (!monat || !zeit) {
+        alert("Bitte Monat und Überstunden im Format hh:mm eingeben.");
+        return;
+    }
+
+    const stunden = nachtragZeitInStunden(zeit);
+
+    if (stunden === null) {
+        alert("Bitte Überstunden im Format hh:mm eingeben, z.B. 08:15 oder -02:30.");
         return;
     }
 
@@ -89,10 +122,9 @@ function monatsNachtragSpeichern() {
     };
 
     eintraege.push(eintrag);
-
     speichernInBrowser();
 
-    document.getElementById("nachtragStunden").value = "";
+    document.getElementById("nachtragZeit").value = "";
     document.getElementById("nachtragBemerkung").value = "";
 
     anzeigen();
@@ -152,7 +184,6 @@ function anzeigen() {
 
     eintraege.forEach((eintrag, index) => {
         const wert = eintrag.ueberstunden || 0;
-
         saldo += wert;
 
         const monat = eintrag.datum.substring(0, 7);
