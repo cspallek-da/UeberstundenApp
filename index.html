@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Überstunden App</title>
+
+    <!-- Browser Icon -->
+    <link rel="icon" type="image/png" href="icon-192.png">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#007aff">
+
+    <!-- iPhone -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Überstunden">
+    <link rel="apple-touch-icon" href="icon-192.png">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -85,6 +99,14 @@
     <div id="liste"></div>
 
     <script src="app.js"></script>
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then(() => console.log('Service Worker registriert'))
+                .catch(err => console.log(err));
+        }
+    </script>
 
 </body>
 </html>
