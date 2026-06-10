@@ -6,6 +6,15 @@ function zeitInMinuten(zeit) {
     return parseInt(teile[0]) * 60 + parseInt(teile[1]);
 }
 
+function formatZeit(stunden) {
+    const negativ = stunden < 0;
+    const gesamtMinuten = Math.round(Math.abs(stunden) * 60);
+    const h = Math.floor(gesamtMinuten / 60);
+    const m = gesamtMinuten % 60;
+
+    return `${negativ ? "-" : ""}${h}h ${m}min`;
+}
+
 function speichern() {
     const datum = document.getElementById("datum").value;
     const kommen = document.getElementById("kommen").value;
@@ -163,7 +172,7 @@ function anzeigen() {
             div.innerHTML = `
                 <strong>${eintrag.datum.substring(0, 7)} - Monats-Nachtrag</strong><br>
                 <span class="${klasse}">
-                    ${wert.toFixed(2)} Stunden
+                    ${formatZeit(wert)}
                 </span><br>
                 ${eintrag.bemerkung || ""}
                 <br><br>
@@ -174,10 +183,10 @@ function anzeigen() {
                 <strong>${eintrag.datum}</strong><br>
                 Kommen: ${eintrag.kommen} | Gehen: ${eintrag.gehen}<br>
                 Pause: ${eintrag.pause} Minuten<br>
-                Arbeitszeit: ${eintrag.arbeitsstunden.toFixed(2)} Stunden<br>
-                Sollzeit: ${eintrag.sollzeit.toFixed(2)} Stunden<br>
+                Arbeitszeit: ${formatZeit(eintrag.arbeitsstunden)}<br>
+                Sollzeit: ${formatZeit(eintrag.sollzeit)}<br>
                 <span class="${klasse}">
-                    Überstunden: ${wert.toFixed(2)} Stunden
+                    Überstunden: ${formatZeit(wert)}
                 </span><br>
                 ${eintrag.bemerkung || ""}
                 <br><br>
@@ -200,14 +209,14 @@ function anzeigen() {
         div.innerHTML = `
             <strong>${monat}</strong><br>
             <span class="${klasse}">
-                ${wert.toFixed(2)} Stunden
+                ${formatZeit(wert)}
             </span>
         `;
 
         monatsuebersicht.appendChild(div);
     });
 
-    saldoAnzeige.textContent = saldo.toFixed(2);
+    saldoAnzeige.textContent = formatZeit(saldo);
 }
 
 anzeigen();
