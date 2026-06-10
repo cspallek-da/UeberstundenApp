@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Überstunden App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Überstunden App</h1>
+
+  <div class="card">
+    <h2>Tages-Eintrag</h2>
+
+    <label>Datum</label>
+    <input type="date" id="datum">
+
+    <label>Kommen</label>
+    <input type="time" id="kommen">
+
+    <label>Gehen</label>
+    <input type="time" id="gehen">
+
+    <label>Pause in Minuten</label>
+    <input type="number" id="pause" value="30">
+
+    <label>Sollzeit in Stunden</label>
+    <input type="number" id="sollzeit" step="0.01" value="6">
+
+    <label>Bemerkung</label>
+    <input type="text" id="bemerkung" placeholder="z.B. länger gearbeitet">
+
+    <button id="speichernButton" onclick="speichern()">Speichern</button>
+  </div>
+
+  <div class="card">
+    <h2>Monats-Nachtrag</h2>
+
+    <label>Monat</label>
+    <input type="month" id="nachtragMonat">
+
+    <label>Überstunden</label>
+    <input type="number" id="nachtragStunden" step="0.25" placeholder="z.B. 7 oder -3">
+
+    <label>Bemerkung</label>
+    <input type="text" id="nachtragBemerkung" placeholder="z.B. Nachtrag Mai">
+
+    <button onclick="monatsNachtragSpeichern()">Nachtrag speichern</button>
+  </div>
+
+  <h2>Gesamtsaldo: <span id="saldo">0</span> Stunden</h2>
+
+  <h2>Monatsübersicht</h2>
+  <div id="monatsuebersicht"></div>
+
+  <h2>Einträge</h2>
+  <div id="liste"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
