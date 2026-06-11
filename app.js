@@ -250,4 +250,58 @@ function anzeigen() {
     saldoAnzeige.textContent = formatZeit(saldo);
 }
 
+function exportieren() {
+    const daten = {
+        exportiertAm: new Date().toISOString(),
+        eintraege: eintraege
+    };
+
+    const json = JSON.stringify(daten, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "timebalance-backup.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function importieren(event) {
+    const datei = event.target.files[0];
+
+    if (!datei) {
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        try {
+            const daten = JSON.parse(e.target.result);
+
+            if (!daten.eintraege || !Array.isArray(daten.eintraege)) {
+                alert("Ungültige Backup-Datei.");
+                return;
+            }
+
+            if (!confirm("Vorhandene Daten werden ersetzt. Fortfahren?")) {
+                return;
+            }
+
+            eintraege = daten.eintraege;
+            speichernInBrowser();
+            anzeigen();
+
+            alert("Backup wurde erfolgreich importiert.");
+        } catch (fehler) {
+            alert("Backup konnte nicht gelesen werden.");
+        }
+    };
+
+    reader.readAsText(datei);
+}
+
 anzeigen();

@@ -87,6 +87,22 @@
 
     </div>
 
+<div class="card">
+    <h2>Backup</h2>
+
+    <button onclick="exportieren()">
+        Daten exportieren
+    </button>
+
+    <label>Backup importieren</label>
+    <input
+        type="file"
+        id="importDatei"
+        accept=".json"
+        onchange="importieren(event)"
+    >
+</div>
+
     <h2>
         Gesamtsaldo:
         <span id="saldo">0h 0min</span>
