@@ -1,4 +1,4 @@
-let eintraege = JSON.parse(localStorage.getItem("ueberstunden")) || [];
+let eintraege = JSON.parse(localStorage.getItem("timebalance_eintraege")) || [];
 let bearbeitungsIndex = null;
 
 function zeitInMinuten(zeit) {
@@ -50,14 +50,11 @@ function speichern() {
     }
 
     if (!istUhrzeitGueltig(kommen) || !istUhrzeitGueltig(gehen)) {
-        alert("Bitte Uhrzeiten im Format HH:MM eingeben, z.B. 09:00 oder 16:25.");
+        alert("Bitte Uhrzeiten im Format HH:MM eingeben.");
         return;
     }
 
-    const arbeitsMinuten =
-        zeitInMinuten(gehen) -
-        zeitInMinuten(kommen) -
-        pause;
+    const arbeitsMinuten = zeitInMinuten(gehen) - zeitInMinuten(kommen) - pause;
 
     if (arbeitsMinuten < 0) {
         alert("Gehen-Zeit muss nach Kommen-Zeit liegen.");
@@ -131,7 +128,7 @@ function monatsNachtragSpeichern() {
 }
 
 function speichernInBrowser() {
-    localStorage.setItem("ueberstunden", JSON.stringify(eintraege));
+    localStorage.setItem("timebalance_eintraege", JSON.stringify(eintraege));
 }
 
 function formularLeeren() {
@@ -162,13 +159,75 @@ function bearbeiten(index) {
 }
 
 function loeschen(index) {
-    if (!confirm("Eintrag wirklich löschen?")) {
-        return;
-    }
+    if (!confirm("Eintrag wirklich löschen?")) return;
 
     eintraege.splice(index, 1);
     speichernInBrowser();
     anzeigen();
+}
+
+async function exportieren() {
+    const daten = {
+        app: "TimeBalance",
+        exportiertAm: new Date().toISOString(),
+        eintraege: eintraege
+    };
+
+    const json = JSON.stringify(daten, null, 2);
+    const file = new File([json], "timebalance-backup.json", {
+        type: "application/json"
+    });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+            files: [file],
+            title: "TimeBalance Backup"
+        });
+        return;
+    }
+
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "timebalance-backup.json";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+
+function importieren(event) {
+    const datei = event.target.files[0];
+
+    if (!datei) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+        try {
+            const daten = JSON.parse(e.target.result);
+
+            if (!daten.eintraege || !Array.isArray(daten.eintraege)) {
+                alert("Ungültige Backup-Datei.");
+                return;
+            }
+
+            if (!confirm("Vorhandene Daten werden ersetzt. Fortfahren?")) {
+                return;
+            }
+
+            eintraege = daten.eintraege;
+            speichernInBrowser();
+            anzeigen();
+
+            alert("Backup wurde erfolgreich importiert.");
+        } catch (fehler) {
+            alert("Backup konnte nicht gelesen werden.");
+        }
+    };
+
+    reader.readAsText(datei);
 }
 
 function anzeigen() {
@@ -202,9 +261,7 @@ function anzeigen() {
         if (eintrag.typ === "nachtrag") {
             div.innerHTML = `
                 <strong>${eintrag.datum.substring(0, 7)} - Monats-Nachtrag</strong><br>
-                <span class="${klasse}">
-                    ${formatZeit(wert)}
-                </span><br>
+                <span class="${klasse}">${formatZeit(wert)}</span><br>
                 ${eintrag.bemerkung || ""}
                 <br><br>
                 <button onclick="loeschen(${index})">Löschen</button>
@@ -216,9 +273,7 @@ function anzeigen() {
                 Pause: ${eintrag.pause} Minuten<br>
                 Arbeitszeit: ${formatZeit(eintrag.arbeitsstunden)}<br>
                 Sollzeit: ${formatZeit(eintrag.sollzeit)}<br>
-                <span class="${klasse}">
-                    Überstunden: ${formatZeit(wert)}
-                </span><br>
+                <span class="${klasse}">Überstunden: ${formatZeit(wert)}</span><br>
                 ${eintrag.bemerkung || ""}
                 <br><br>
                 <button onclick="bearbeiten(${index})">Bearbeiten</button>
@@ -239,69 +294,13 @@ function anzeigen() {
 
         div.innerHTML = `
             <strong>${monat}</strong><br>
-            <span class="${klasse}">
-                ${formatZeit(wert)}
-            </span>
+            <span class="${klasse}">${formatZeit(wert)}</span>
         `;
 
         monatsuebersicht.appendChild(div);
     });
 
     saldoAnzeige.textContent = formatZeit(saldo);
-}
-
-function exportieren() {
-    const daten = {
-        exportiertAm: new Date().toISOString(),
-        eintraege: eintraege
-    };
-
-    const json = JSON.stringify(daten, null, 2);
-    const blob = new Blob([json], { type: "application/json" });
-
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "timebalance-backup.json";
-    a.click();
-
-    URL.revokeObjectURL(url);
-}
-
-function importieren(event) {
-    const datei = event.target.files[0];
-
-    if (!datei) {
-        return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-        try {
-            const daten = JSON.parse(e.target.result);
-
-            if (!daten.eintraege || !Array.isArray(daten.eintraege)) {
-                alert("Ungültige Backup-Datei.");
-                return;
-            }
-
-            if (!confirm("Vorhandene Daten werden ersetzt. Fortfahren?")) {
-                return;
-            }
-
-            eintraege = daten.eintraege;
-            speichernInBrowser();
-            anzeigen();
-
-            alert("Backup wurde erfolgreich importiert.");
-        } catch (fehler) {
-            alert("Backup konnte nicht gelesen werden.");
-        }
-    };
-
-    reader.readAsText(datei);
 }
 
 anzeigen();
