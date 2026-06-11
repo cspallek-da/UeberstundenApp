@@ -54,3 +54,52 @@ button {
 .minus {
   color: red;
 }
+
+/* Automatischer Dark Mode für iPhone, iPad, Safari */
+
+@media (prefers-color-scheme: dark) {
+
+    body {
+        background-color: #121212;
+        color: #ffffff;
+    }
+
+    .card {
+        background-color: #1e1e1e;
+        color: #ffffff;
+    }
+
+    input,
+    select,
+    textarea {
+        background-color: #2b2b2b;
+        color: #ffffff;
+        border: 1px solid #555;
+    }
+
+    input::placeholder {
+        color: #aaaaaa;
+    }
+
+    h1,
+    h2,
+    h3,
+    label {
+        color: #ffffff;
+    }
+
+    .eintrag {
+        background-color: #1e1e1e;
+        color: #ffffff;
+    }
+
+    button {
+        background-color: #0a84ff;
+        color: white;
+    }
+
+    #hilfeBox {
+        background-color: #1e1e1e !important;
+        color: #ffffff;
+    }
+}
