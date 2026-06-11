@@ -3,20 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>TimeBalance</title>
 
-    <!-- Browser Icon -->
     <link rel="icon" type="image/png" href="icon-192.png">
-
-    <!-- PWA -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#007aff">
 
-    <!-- iPhone -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Überstunden">
+    <meta name="apple-mobile-web-app-title" content="TimeBalance">
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <link rel="stylesheet" href="style.css">
@@ -26,7 +21,6 @@
     <h1>TimeBalance</h1>
 
     <div class="card">
-
         <h2>Tages-Eintrag</h2>
 
         <label>Datum</label>
@@ -45,68 +39,36 @@
         <input type="number" id="sollzeit" step="0.01" value="6">
 
         <label>Bemerkung</label>
-        <input
-            type="text"
-            id="bemerkung"
-            placeholder="z.B. länger gearbeitet"
-        >
+        <input type="text" id="bemerkung" placeholder="z.B. länger gearbeitet">
 
-        <button
-            id="speichernButton"
-            onclick="speichern()"
-        >
-            Speichern
-        </button>
-
+        <button id="speichernButton" onclick="speichern()">Speichern</button>
     </div>
 
     <div class="card">
-
         <h2>Monats-Nachtrag</h2>
 
         <label>Monat</label>
         <input type="month" id="nachtragMonat">
 
         <label>Überstunden (hh:mm)</label>
-        <input
-            type="text"
-            id="nachtragZeit"
-            placeholder="z.B. 08:15 oder -02:30"
-        >
+        <input type="text" id="nachtragZeit" placeholder="z.B. 08:15 oder -02:30">
 
         <label>Bemerkung</label>
-        <input
-            type="text"
-            id="nachtragBemerkung"
-            placeholder="z.B. Nachtrag Mai"
-        >
+        <input type="text" id="nachtragBemerkung" placeholder="z.B. Nachtrag Mai">
 
-        <button onclick="monatsNachtragSpeichern()">
-            Nachtrag speichern
-        </button>
-
+        <button onclick="monatsNachtragSpeichern()">Nachtrag speichern</button>
     </div>
 
-<div class="card">
-    <h2>Backup</h2>
+    <div class="card">
+        <h2>Backup</h2>
 
-    <button onclick="exportieren()">
-        Daten exportieren
-    </button>
+        <button onclick="exportieren()">Daten exportieren</button>
 
-    <label>Backup importieren</label>
-    <input
-        type="file"
-        id="importDatei"
-        accept=".json"
-        onchange="importieren(event)"
-    >
-</div>
+        <label>Backup importieren</label>
+        <input type="file" id="importDatei" accept=".json,application/json" onchange="importieren(event)">
+    </div>
 
-    <h2>
-        Gesamtsaldo:
-        <span id="saldo">0h 0min</span>
-    </h2>
+    <h2>Gesamtsaldo: <span id="saldo">0h 0min</span></h2>
 
     <h2>Monatsübersicht</h2>
     <div id="monatsuebersicht"></div>
@@ -118,9 +80,7 @@
 
     <script>
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./service-worker.js')
-                .then(() => console.log('Service Worker registriert'))
-                .catch(err => console.log(err));
+            navigator.serviceWorker.register('./service-worker.js');
         }
     </script>
 
