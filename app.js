@@ -18,23 +18,6 @@ function istUhrzeitGueltig(zeit) {
     return /^([01]\d|2[0-3]):[0-5]\d$/.test(zeit);
 }
 
-function nachtragZeitInStunden(wert) {
-    const sauber = wert.trim();
-    const negativ = sauber.startsWith("-");
-    const ohneMinus = negativ ? sauber.substring(1) : sauber;
-
-    if (!/^\d{1,3}:[0-5]\d$/.test(ohneMinus)) {
-        return null;
-    }
-
-    const teile = ohneMinus.split(":");
-    const stunden = parseInt(teile[0]);
-    const minuten = parseInt(teile[1]);
-
-    const dezimal = stunden + minuten / 60;
-    return negativ ? -dezimal : dezimal;
-}
-
 function formatZeit(stunden) {
     const negativ = stunden < 0;
     const gesamtMinuten = Math.round(Math.abs(stunden) * 60);
@@ -99,19 +82,26 @@ function speichern() {
 
 function monatsNachtragSpeichern() {
     const monat = document.getElementById("nachtragMonat").value;
-    const zeit = document.getElementById("nachtragZeit").value;
+    const stunden = parseInt(document.getElementById("nachtragStunden").value);
+    const minuten = parseInt(document.getElementById("nachtragMinuten").value);
     const bemerkung = document.getElementById("nachtragBemerkung").value;
 
-    if (!monat || !zeit) {
-        alert("Bitte Monat und Überstunden im Format hh:mm eingeben.");
+    if (!monat || isNaN(stunden) || isNaN(minuten)) {
+        alert("Bitte Monat, Stunden und Minuten eingeben.");
         return;
     }
 
-    const stunden = nachtragZeitInStunden(zeit);
-
-    if (stunden === null) {
-        alert("Bitte Überstunden im Format hh:mm eingeben, z.B. 08:15 oder -02:30.");
+    if (minuten < 0 || minuten > 59) {
+        alert("Minuten müssen zwischen 0 und 59 liegen.");
         return;
+    }
+
+    let ueberstunden;
+
+    if (stunden < 0) {
+        ueberstunden = stunden - (minuten / 60);
+    } else {
+        ueberstunden = stunden + (minuten / 60);
     }
 
     const eintrag = {
@@ -122,14 +112,15 @@ function monatsNachtragSpeichern() {
         pause: 0,
         sollzeit: 0,
         arbeitsstunden: 0,
-        ueberstunden: stunden,
+        ueberstunden: ueberstunden,
         bemerkung: bemerkung || "Monats-Nachtrag"
     };
 
     eintraege.push(eintrag);
     speichernInBrowser();
 
-    document.getElementById("nachtragZeit").value = "";
+    document.getElementById("nachtragStunden").value = "";
+    document.getElementById("nachtragMinuten").value = "0";
     document.getElementById("nachtragBemerkung").value = "";
 
     anzeigen();

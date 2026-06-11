@@ -28,8 +28,9 @@
         <p>Datum, Kommen, Gehen, Pause und Sollzeit eintragen. TimeBalance berechnet automatisch die Überstunden.</p>
 
         <h3>Monats-Nachtrag</h3>
-        <p>Wenn du nur die Monatssumme kennst, trage sie im Format <b>hh:mm</b> ein.</p>
-        <p>Beispiele: <b>08:15</b> = 8h 15min, <b>-02:30</b> = minus 2h 30min.</p>
+        <p>Wenn du nur die Monatssumme kennst, trage Stunden und Minuten getrennt ein.</p>
+        <p><b>Beispiel:</b> Stunden 8 und Minuten 15 ergibt 8h 15min.</p>
+        <p><b>Minus-Beispiel:</b> Stunden -2 und Minuten 30 ergibt -2h 30min.</p>
 
         <h3>Bearbeiten / Löschen</h3>
         <p>Tages-Einträge kannst du bearbeiten. Monats-Nachträge bitte löschen und neu anlegen.</p>
@@ -39,7 +40,7 @@
         <p>Auf dem iPhone öffnet sich das Teilen-Menü. Wähle z. B. „In Dateien sichern“.</p>
         <p>Beim Import ersetzt die Backup-Datei die aktuellen Daten.</p>
 
-        <p><b>Version:</b> 1.0</p>
+        <p><b>Version:</b> 1.1</p>
 
         <button onclick="hilfeAusblenden()">Schließen</button>
     </div>
@@ -74,8 +75,11 @@
         <label>Monat</label>
         <input type="month" id="nachtragMonat">
 
-        <label>Überstunden (hh:mm)</label>
-        <input type="text" id="nachtragZeit" placeholder="z.B. 08:15 oder -02:30">
+        <label>Überstunden Stunden</label>
+        <input type="number" id="nachtragStunden" placeholder="z.B. 8 oder -2">
+
+        <label>Überstunden Minuten</label>
+        <input type="number" id="nachtragMinuten" min="0" max="59" value="0">
 
         <label>Bemerkung</label>
         <input type="text" id="nachtragBemerkung" placeholder="z.B. Nachtrag Mai">
