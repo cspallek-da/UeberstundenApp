@@ -1,6 +1,14 @@
 let eintraege = JSON.parse(localStorage.getItem("timebalance_eintraege")) || [];
 let bearbeitungsIndex = null;
 
+function hilfeAnzeigen() {
+    document.getElementById("hilfeBox").style.display = "block";
+}
+
+function hilfeAusblenden() {
+    document.getElementById("hilfeBox").style.display = "none";
+}
+
 function zeitInMinuten(zeit) {
     const teile = zeit.split(":");
     return parseInt(teile[0]) * 60 + parseInt(teile[1]);
@@ -159,7 +167,9 @@ function bearbeiten(index) {
 }
 
 function loeschen(index) {
-    if (!confirm("Eintrag wirklich löschen?")) return;
+    if (!confirm("Eintrag wirklich löschen?")) {
+        return;
+    }
 
     eintraege.splice(index, 1);
     speichernInBrowser();
@@ -174,16 +184,25 @@ async function exportieren() {
     };
 
     const json = JSON.stringify(daten, null, 2);
-    const file = new File([json], "timebalance-backup.json", {
-        type: "application/json"
-    });
 
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-            files: [file],
-            title: "TimeBalance Backup"
-        });
-        return;
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        try {
+            const file = new File(
+                [json],
+                "timebalance-backup.json",
+                { type: "application/json" }
+            );
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: "TimeBalance Backup"
+                });
+                return;
+            }
+        } catch (e) {
+            console.log(e);
+        }
     }
 
     const blob = new Blob([json], { type: "application/json" });
@@ -191,8 +210,11 @@ async function exportieren() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = "timebalance-backup.json";
+    a.download = `timebalance-backup-${new Date().toISOString().substring(0, 10)}.json`;
+
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
 
     URL.revokeObjectURL(url);
 }
@@ -200,7 +222,9 @@ async function exportieren() {
 function importieren(event) {
     const datei = event.target.files[0];
 
-    if (!datei) return;
+    if (!datei) {
+        return;
+    }
 
     const reader = new FileReader();
 
@@ -220,6 +244,8 @@ function importieren(event) {
             eintraege = daten.eintraege;
             speichernInBrowser();
             anzeigen();
+
+            document.getElementById("importDatei").value = "";
 
             alert("Backup wurde erfolgreich importiert.");
         } catch (fehler) {

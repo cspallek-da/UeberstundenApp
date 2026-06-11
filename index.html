@@ -10,7 +10,6 @@
     <meta name="theme-color" content="#007aff">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="TimeBalance">
     <link rel="apple-touch-icon" href="icon-192.png">
 
@@ -19,6 +18,31 @@
 <body>
 
     <h1>TimeBalance</h1>
+
+    <button onclick="hilfeAnzeigen()">❓ Hilfe / Anleitung</button>
+
+    <div id="hilfeBox" style="display:none; background:white; padding:20px; border-radius:10px; margin:20px 0;">
+        <h2>TimeBalance – Anleitung</h2>
+
+        <h3>Tages-Eintrag</h3>
+        <p>Datum, Kommen, Gehen, Pause und Sollzeit eintragen. TimeBalance berechnet automatisch die Überstunden.</p>
+
+        <h3>Monats-Nachtrag</h3>
+        <p>Wenn du nur die Monatssumme kennst, trage sie im Format <b>hh:mm</b> ein.</p>
+        <p>Beispiele: <b>08:15</b> = 8h 15min, <b>-02:30</b> = minus 2h 30min.</p>
+
+        <h3>Bearbeiten / Löschen</h3>
+        <p>Tages-Einträge kannst du bearbeiten. Monats-Nachträge bitte löschen und neu anlegen.</p>
+
+        <h3>Backup</h3>
+        <p>Mit „Daten exportieren“ sicherst du deine Daten als JSON-Datei.</p>
+        <p>Auf dem iPhone öffnet sich das Teilen-Menü. Wähle z. B. „In Dateien sichern“.</p>
+        <p>Beim Import ersetzt die Backup-Datei die aktuellen Daten.</p>
+
+        <p><b>Version:</b> 1.0</p>
+
+        <button onclick="hilfeAusblenden()">Schließen</button>
+    </div>
 
     <div class="card">
         <h2>Tages-Eintrag</h2>
