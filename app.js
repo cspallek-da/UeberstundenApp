@@ -1,6 +1,27 @@
 let eintraege = JSON.parse(localStorage.getItem("timebalance_eintraege")) || [];
 let bearbeitungsIndex = null;
 
+function themeLaden() {
+    const theme = localStorage.getItem("timebalance_theme") || "system";
+
+    document.documentElement.setAttribute("data-theme", theme);
+
+    const select = document.getElementById("themeSelect");
+
+    if (select) {
+        select.value = theme;
+    }
+}
+
+function themeWechseln() {
+    const theme = document.getElementById("themeSelect").value;
+
+    localStorage.setItem("timebalance_theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
+}
+
+document.addEventListener("DOMContentLoaded", themeLaden);
+
 function hilfeAnzeigen() {
     document.getElementById("hilfeBox").style.display = "block";
 }
