@@ -1,23 +1,31 @@
 let eintraege = JSON.parse(localStorage.getItem("timebalance_eintraege")) || [];
 let bearbeitungsIndex = null;
 
-function themeLaden() {
-    const theme = localStorage.getItem("timebalance_theme") || "system";
-
-    document.documentElement.setAttribute("data-theme", theme);
-
-    const select = document.getElementById("themeSelect");
-
-    if (select) {
-        select.value = theme;
-    }
-}
-
-function themeWechseln() {
-    const theme = document.getElementById("themeSelect").value;
-
+function setTheme(theme) {
     localStorage.setItem("timebalance_theme", theme);
     document.documentElement.setAttribute("data-theme", theme);
+    updateThemeButtons();
+}
+
+function updateThemeButtons() {
+    const aktuellesTheme =
+        localStorage.getItem("timebalance_theme") || "system";
+
+    document.querySelectorAll(".theme-btn").forEach(btn => {
+        btn.classList.remove("theme-active");
+
+        if (btn.dataset.themeBtn === aktuellesTheme) {
+            btn.classList.add("theme-active");
+        }
+    });
+}
+
+function themeLaden() {
+    const theme =
+        localStorage.getItem("timebalance_theme") || "system";
+
+    document.documentElement.setAttribute("data-theme", theme);
+    updateThemeButtons();
 }
 
 document.addEventListener("DOMContentLoaded", themeLaden);
