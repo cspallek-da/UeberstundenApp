@@ -133,6 +133,55 @@ function speichern() {
     anzeigen();
 }
 
+function speichernAusKalender() {
+    const datum = document.getElementById("quickDatum").value;
+    const kommen = document.getElementById("quickKommen").value.trim();
+    const gehen = document.getElementById("quickGehen").value.trim();
+    const pause = parseInt(document.getElementById("quickPause").value);
+    const sollzeit = parseFloat(document.getElementById("quickSollzeit").value);
+    const bemerkung = document.getElementById("quickBemerkung").value;
+
+    if (!datum || !kommen || !gehen || isNaN(pause) || isNaN(sollzeit)) {
+        alert("Bitte Kommen, Gehen, Pause und Sollzeit ausfüllen.");
+        return;
+    }
+
+    if (!istUhrzeitGueltig(kommen) || !istUhrzeitGueltig(gehen)) {
+        alert("Bitte Uhrzeiten im Format HH:MM eingeben.");
+        return;
+    }
+
+    const arbeitsMinuten = zeitInMinuten(gehen) - zeitInMinuten(kommen) - pause;
+
+    if (arbeitsMinuten < 0) {
+        alert("Gehen-Zeit muss nach Kommen-Zeit liegen.");
+        return;
+    }
+
+    const arbeitsstunden = arbeitsMinuten / 60;
+    const ueberstunden = arbeitsstunden - sollzeit;
+
+    const eintrag = {
+        typ: "tag",
+        datum,
+        kommen,
+        gehen,
+        pause,
+        sollzeit,
+        arbeitsstunden,
+        ueberstunden,
+        bemerkung
+    };
+
+    eintraege.push(eintrag);
+    speichernInBrowser();
+    anzeigen();
+    renderKalender();
+    closeDetails();
+
+    alert("Eintrag erfolgreich erstellt!");
+}
+
 function monatsNachtragSpeichern() {
     const monat = document.getElementById("nachtragMonat").value;
     const stunden = parseInt(document.getElementById("nachtragStunden").value);
@@ -583,7 +632,13 @@ function renderKalender() {
             ${wert ? `<span class="tag-wert ${wertKlasse}">${wert}</span>` : ""}
         `;
 
-        div.onclick = () => zeigeDetailsTag(datum, eintraegeProTag[datum]);
+        div.onclick = () => {
+            if (eintraegeProTag[datum]) {
+                zeigeDetailsTag(datum, eintraegeProTag[datum]);
+            } else {
+                zeigeQuickAddForm(datum);
+            }
+        };
 
         kalenderGrid.appendChild(div);
     }
@@ -627,6 +682,43 @@ function zeigeDetailsTag(datum, eintragData) {
     }
 
     html += `</div>`;
+
+    detailsContent.innerHTML = html;
+    detailsDiv.style.display = "block";
+}
+
+function zeigeQuickAddForm(datum) {
+    const detailsDiv = document.getElementById("kalenderDetails");
+    const dateSpan = document.getElementById("selectedDate");
+    const detailsContent = document.getElementById("selectedDateDetails");
+
+    dateSpan.textContent = datum;
+
+    const html = `
+        <div style="margin: 15px 0;">
+            <p><strong>Neuer Eintrag für ${datum}</strong></p>
+            
+            <label style="display: block; margin-top: 10px;">Kommen</label>
+            <input type="time" id="quickKommen" style="width: 100%; padding: 8px; box-sizing: border-box;">
+            
+            <label style="display: block; margin-top: 10px;">Gehen</label>
+            <input type="time" id="quickGehen" style="width: 100%; padding: 8px; box-sizing: border-box;">
+            
+            <label style="display: block; margin-top: 10px;">Pause (Minuten)</label>
+            <input type="number" id="quickPause" value="30" style="width: 100%; padding: 8px; box-sizing: border-box;">
+            
+            <label style="display: block; margin-top: 10px;">Sollzeit (Stunden)</label>
+            <input type="number" id="quickSollzeit" step="0.01" value="6" style="width: 100%; padding: 8px; box-sizing: border-box;">
+            
+            <label style="display: block; margin-top: 10px;">Bemerkung</label>
+            <input type="text" id="quickBemerkung" placeholder="Optional" style="width: 100%; padding: 8px; box-sizing: border-box;">
+            
+            <input type="hidden" id="quickDatum" value="${datum}">
+            
+            <button style="width: 100%; margin-top: 10px;" onclick="speichernAusKalender()">✅ Speichern</button>
+            <button style="width: 100%; margin-top: 10px; background: #6c757d;" onclick="closeDetails()">❌ Abbrechen</button>
+        </div>
+    `;
 
     detailsContent.innerHTML = html;
     detailsDiv.style.display = "block";
