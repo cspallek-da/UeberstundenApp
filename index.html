@@ -38,34 +38,58 @@
     <button onclick="hilfeAnzeigen()">❓ Hilfe / Anleitung</button>
 
     <div id="hilfeBox" style="display:none;">
-        <h2>TimeBalance – Anleitung</h2>
+        <h2>TimeBalance – Hilfe / Anleitung</h2>
 
-        <h3>Tages-Eintrag</h3>
-        <p>Datum, Kommen, Gehen, Pause und Sollzeit eintragen. TimeBalance berechnet automatisch die Überstunden.</p>
+        <h3>1. Tages-Eintrag</h3>
+        <p>Im Reiter „Einträge" erfasst du deine tägliche Arbeitszeit.</p>
+        <p>Trage Datum, Kommen, Gehen, Pause und Sollzeit ein. TimeBalance berechnet daraus automatisch die Arbeitszeit und die Überstunden.</p>
+        <p><b>Beispiel:</b> Kommen 08:00, Gehen 16:30, Pause 30 Minuten, Sollzeit 7,5 Stunden ergibt 0h 30min Überstunden.</p>
 
-        <h3>Monats-Nachtrag</h3>
-        <p>Wenn du nur die Monatssumme kennst, trage Stunden und Minuten getrennt ein.</p>
-        <p><b>Beispiel:</b> Stunden 8 und Minuten 15 ergibt 8h 15min.</p>
+        <h3>2. Monats-Nachtrag</h3>
+        <p>Der Monats-Nachtrag ist für Fälle gedacht, in denen du nur eine Gesamtsumme für einen Monat kennst.</p>
+        <p><b>Plus-Beispiel:</b> Stunden 8 und Minuten 15 ergibt 8h 15min.</p>
         <p><b>Minus-Beispiel:</b> Stunden -2 und Minuten 30 ergibt -2h 30min.</p>
+        <p>Monats-Nachträge werden immer auf den ersten Tag des Monats gespeichert.</p>
 
-        <h3>Einstellungen</h3>
-        <p>Im Reiter „Einstellungen" kannst du Name, Firma, Abteilung und Personalnummer für den PDF-Bericht speichern.</p>
+        <h3>3. Bearbeiten / Löschen</h3>
+        <p>Tages-Einträge kannst du über „Bearbeiten" ändern.</p>
+        <p>Monats-Nachträge bitte löschen und neu anlegen, damit die Monatswerte eindeutig bleiben.</p>
 
-        <h3>Bearbeiten / Löschen</h3>
-        <p>Tages-Einträge kannst du bearbeiten. Monats-Nachträge bitte löschen und neu anlegen.</p>
+        <h3>4. Kalender</h3>
+        <p>Im Reiter „Kalender" siehst du alle Einträge eines Monats als Kalenderansicht.</p>
+        <p>🟢 Grün = Plusstunden | 🔴 Rot = Minusstunden | 💛 Gelb = Monats-Nachtrag</p>
+        <p>Wenn du auf einen Tag klickst, siehst du Details oder kannst direkt einen neuen Eintrag für diesen Tag erfassen.</p>
 
-        <h3>Backup</h3>
-        <p>Mit „Daten exportieren" sicherst du deine Daten als JSON-Datei.</p>
-        <p>Auf dem iPhone öffnet sich das Teilen-Menü. Wähle z. B. „In Dateien sichern".</p>
-        <p>Beim Import ersetzt die Backup-Datei die aktuellen Daten und übernimmt vorhandene Einstellungen.</p>
+        <h3>5. Einstellungen</h3>
+        <p>Im Reiter „Einstellungen" kannst du persönliche Angaben speichern:</p>
+        <p>Name, Firma, Abteilung und Personalnummer.</p>
+        <p>Diese Angaben erscheinen automatisch im PDF-Bericht. Leere Felder werden im Bericht ausgelassen.</p>
+        <p>Die Einstellungen werden lokal im Browser gespeichert und beim Backup mit exportiert.</p>
 
-        <h3>PDF / Bericht</h3>
-        <p>Im Reiter "Backup" kannst du vor dem PDF-Bericht auswählen, ob alle Einträge, ein ganzes Jahr oder nur ein bestimmter Monat ausgegeben werden sollen.</p>
+        <h3>6. PDF / Bericht</h3>
+        <p>Im Reiter „Backup" kannst du einen PDF-Bericht anzeigen und anschließend über „Drucken / PDF" speichern oder ausdrucken.</p>
+        <p>Du kannst auswählen zwischen:</p>
+        <p>• Alle Einträge</p>
+        <p>• Ganzes Jahr</p>
+        <p>• Bestimmter Monat</p>
+        <p>Der Bericht enthält Mitarbeiterdaten, Zeitraum, Saldo, Monatsübersicht, Einträge und Unterschriftsfelder.</p>
 
-        <h3>Kalender-Ansicht</h3>
-        <p>Im Reiter "Kalender" kannst du alle Einträge eines Monats als Kalender-Grid sehen.</p>
-        <p>🟢 Grün = Überstunden | 🔴 Rot = Minus | 💛 Gelb = Nachtrag</p>
-        <p>Klick auf einen Tag um Details zu sehen.</p>
+        <h3>7. Backup exportieren</h3>
+        <p>Mit „Daten exportieren" sicherst du deine Einträge und Einstellungen als JSON-Datei.</p>
+        <p>Auf dem iPhone öffnet sich das Teilen-Menü. Wähle zum Beispiel „In Dateien sichern", iCloud oder OneDrive.</p>
+        <p>Regelmäßige Backups sind wichtig, weil die App die Daten lokal im Browser bzw. in der PWA speichert.</p>
+
+        <h3>8. Backup importieren</h3>
+        <p>Beim Import wird die aktuelle Datenbank durch die Backup-Datei ersetzt.</p>
+        <p>Wenn das Backup Einstellungen enthält, werden Name, Firma, Abteilung und Personalnummer ebenfalls übernommen.</p>
+
+        <h3>9. Datum und Anzeige</h3>
+        <p>Intern speichert TimeBalance Datumswerte technisch im Format JJJJ-MM-TT, damit Filter und Backups stabil bleiben.</p>
+        <p>In der Anzeige und im PDF-Bericht wird das Datum deutsch dargestellt, zum Beispiel 12.06.2026.</p>
+
+        <h3>10. Offline / PWA</h3>
+        <p>TimeBalance kann als PWA auf dem iPhone genutzt werden.</p>
+        <p>Nach Updates kann es nötig sein, die App einmal komplett zu schließen und neu zu öffnen, damit der neue Cache geladen wird.</p>
 
         <p><b>Version:</b> 1.5</p>
 
