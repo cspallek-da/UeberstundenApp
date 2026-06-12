@@ -56,12 +56,15 @@
         <p>Auf dem iPhone öffnet sich das Teilen-Menü. Wähle z. B. „In Dateien sichern".</p>
         <p>Beim Import ersetzt die Backup-Datei die aktuellen Daten.</p>
 
+        <h3>PDF / Bericht</h3>
+        <p>Im Reiter "Backup" kannst du vor dem PDF-Bericht auswählen, ob alle Einträge, ein ganzes Jahr oder nur ein bestimmter Monat ausgegeben werden sollen.</p>
+
         <h3>Kalender-Ansicht</h3>
         <p>Im Reiter "Kalender" kannst du alle Einträge eines Monats als Kalender-Grid sehen.</p>
         <p>🟢 Grün = Überstunden | 🔴 Rot = Minus | 💛 Gelb = Nachtrag</p>
         <p>Klick auf einen Tag um Details zu sehen.</p>
 
-        <p><b>Version:</b> 1.3</p>
+        <p><b>Version:</b> 1.4</p>
 
         <button onclick="hilfeAusblenden()">Schließen</button>
     </div>
@@ -159,7 +162,27 @@
             <h2>Backup</h2>
 
             <button onclick="exportieren()">Daten exportieren</button>
-            <button onclick="pdfAnsicht()">📄 PDF / Bericht anzeigen</button>
+
+            <h2>PDF / Bericht</h2>
+
+            <label>Zeitraum auswählen</label>
+            <select id="pdfZeitraum" onchange="pdfAuswahlAktualisieren()">
+                <option value="alle">Alle Einträge</option>
+                <option value="jahr">Ganzes Jahr</option>
+                <option value="monat">Bestimmter Monat</option>
+            </select>
+
+            <div id="pdfJahrBox" style="display:none;">
+                <label>Jahr</label>
+                <input type="number" id="pdfJahr" min="2000" max="2100" step="1">
+            </div>
+
+            <div id="pdfMonatBox" style="display:none;">
+                <label>Monat</label>
+                <input type="month" id="pdfMonat">
+            </div>
+
+            <button onclick="pdfAnsichtMitAuswahl()">📄 PDF / Bericht anzeigen</button>
 
             <label>Backup importieren</label>
             <input type="file" id="importDatei" accept=".json,application/json" onchange="importieren(event)">
@@ -167,6 +190,7 @@
     </div>
 
     <script src="app.js"></script>
+    <script src="pdf.js"></script>
 
     <script>
         if ('serviceWorker' in navigator) {
