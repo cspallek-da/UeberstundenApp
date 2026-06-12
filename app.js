@@ -349,4 +349,112 @@ function anzeigen() {
     saldoAnzeige.textContent = formatZeit(saldo);
 }
 
+function pdfAnsicht() {
+
+    let bericht = `
+    <html>
+    <head>
+        <title>TimeBalance Bericht</title>
+
+        <style>
+
+            body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+            }
+
+            h1,h2 {
+                text-align:center;
+            }
+
+            table {
+                width:100%;
+                border-collapse: collapse;
+            }
+
+            th, td {
+                border:1px solid #ccc;
+                padding:8px;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+
+    <h1>TimeBalance Bericht</h1>
+
+    <h2>
+        Gesamtsaldo:
+        ${document.getElementById("saldo").textContent}
+    </h2>
+
+    <h2>Monatsübersicht</h2>
+    `;
+
+    let monate = {};
+
+    eintraege.forEach(e => {
+
+        const monat = e.datum.substring(0,7);
+
+        if (!monate[monat]) {
+            monate[monat] = 0;
+        }
+
+        monate[monat] += e.ueberstunden;
+    });
+
+    Object.keys(monate)
+        .sort()
+        .forEach(monat => {
+
+            bericht += `
+                <p>
+                    <b>${monat}</b>:
+                    ${formatZeit(monate[monat])}
+                </p>
+            `;
+        });
+
+    bericht += `
+        <h2>Einträge</h2>
+
+        <table>
+            <tr>
+                <th>Datum</th>
+                <th>Überstunden</th>
+                <th>Bemerkung</th>
+            </tr>
+    `;
+
+    eintraege.forEach(e => {
+
+        bericht += `
+            <tr>
+                <td>${e.datum}</td>
+                <td>${formatZeit(e.ueberstunden)}</td>
+                <td>${e.bemerkung || ""}</td>
+            </tr>
+        `;
+    });
+
+    bericht += `
+        </table>
+
+        <p>
+            Erstellt am:
+            ${new Date().toLocaleString("de-DE")}
+        </p>
+
+    </body>
+    </html>
+    `;
+
+    const fenster = window.open("", "_blank");
+
+    fenster.document.write(bericht);
+    fenster.document.close();
+}
 anzeigen();
