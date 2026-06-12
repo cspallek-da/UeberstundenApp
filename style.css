@@ -205,6 +205,53 @@ html[data-theme="dark"] input::placeholder {
     html[data-theme="system"] input::placeholder {
         color: #aaaaaa;
     }
+
+    html[data-theme="system"] .wochentag {
+        color: #aaa;
+    }
+
+    html[data-theme="system"] .tabs {
+        border-bottom-color: #555;
+    }
+
+    html[data-theme="system"] .tab-btn {
+        color: #66b3ff;
+    }
+
+    html[data-theme="system"] .tab-btn.active {
+        color: #66b3ff;
+        border-bottom-color: #66b3ff;
+    }
+
+    html[data-theme="system"] .kalender-tag {
+        background: #2b2b2b;
+        border-color: #444;
+        color: #ccc;
+    }
+
+    html[data-theme="system"] .kalender-tag.plus {
+        background: #1e5e2c;
+        border-color: #28a745;
+        color: #6ee989;
+    }
+
+    html[data-theme="system"] .kalender-tag.minus {
+        background: #5e1e1e;
+        border-color: #dc3545;
+        color: #ff6b6b;
+    }
+
+    html[data-theme="system"] .kalender-tag.neutral {
+        background: #3a3a3a;
+        border-color: #666;
+        color: #bbb;
+    }
+
+    html[data-theme="system"] .kalender-tag.nachtrag {
+        background: #4a4a1e;
+        border-color: #ffc107;
+        color: #ffd700;
+    }
 }
 
 /* TAB NAVIGATION */
@@ -334,6 +381,7 @@ html[data-theme="dark"] .wochentag {
     flex-direction: column;
     justify-content: space-between;
     background: #f9f9f9;
+    color: #000;
     transition: all 0.2s ease;
 }
 
