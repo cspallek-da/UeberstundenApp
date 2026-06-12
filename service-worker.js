@@ -1,10 +1,11 @@
-const CACHE_NAME = "timebalance-v16";
+const CACHE_NAME = "timebalance-v17";
 
 const FILES_TO_CACHE = [
     "./",
     "./index.html",
     "./app.js",
     "./pdf.js",
+    "./date-format.js",
     "./style.css",
     "./manifest.json",
     "./icon-192.png",
