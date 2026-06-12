@@ -60,6 +60,11 @@ button {
     border: none;
     border-radius: 8px;
     font-size: 16px;
+    cursor: pointer;
+}
+
+button:active {
+    opacity: 0.8;
 }
 
 .plus {
@@ -200,4 +205,219 @@ html[data-theme="dark"] input::placeholder {
     html[data-theme="system"] input::placeholder {
         color: #aaaaaa;
     }
+}
+
+/* TAB NAVIGATION */
+
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ddd;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    flex: 1;
+    margin: 0;
+    margin-bottom: -2px;
+    padding: 12px;
+    background: transparent;
+    color: #007aff;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    background: rgba(0, 122, 255, 0.1);
+}
+
+.tab-btn.active {
+    color: #007aff;
+    border-bottom-color: #007aff;
+}
+
+html[data-theme="dark"] .tabs {
+    border-bottom-color: #555;
+}
+
+html[data-theme="dark"] .tab-btn {
+    color: #66b3ff;
+}
+
+html[data-theme="dark"] .tab-btn.active {
+    color: #66b3ff;
+    border-bottom-color: #66b3ff;
+}
+
+/* TAB CONTENT */
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* KALENDER STYLES */
+
+.kalender-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.kalender-header h2 {
+    margin: 0;
+    flex: 1;
+    text-align: center;
+}
+
+.nav-btn {
+    width: auto;
+    padding: 10px 15px;
+    margin: 0;
+    background: #007aff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.nav-btn:active {
+    opacity: 0.8;
+}
+
+.kalender-wochentage {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.wochentag {
+    padding: 10px;
+    color: #666;
+    font-size: 12px;
+}
+
+html[data-theme="dark"] .wochentag {
+    color: #aaa;
+}
+
+.kalender-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    margin-bottom: 20px;
+}
+
+.kalender-tag {
+    aspect-ratio: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: #f9f9f9;
+    transition: all 0.2s ease;
+}
+
+.kalender-tag:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
+}
+
+.kalender-tag.leer {
+    background: transparent;
+    border: none;
+    cursor: default;
+}
+
+.kalender-tag.leer:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.kalender-tag.plus {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.kalender-tag.minus {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+.kalender-tag.neutral {
+    background: #e2e3e5;
+    border-color: #d6d8db;
+    color: #383d41;
+}
+
+.kalender-tag.nachtrag {
+    background: #fff3cd;
+    border-color: #ffc107;
+    color: #856404;
+}
+
+html[data-theme="dark"] .kalender-tag {
+    background: #2b2b2b;
+    border-color: #444;
+    color: #ccc;
+}
+
+html[data-theme="dark"] .kalender-tag.plus {
+    background: #1e5e2c;
+    border-color: #28a745;
+    color: #6ee989;
+}
+
+html[data-theme="dark"] .kalender-tag.minus {
+    background: #5e1e1e;
+    border-color: #dc3545;
+    color: #ff6b6b;
+}
+
+html[data-theme="dark"] .kalender-tag.neutral {
+    background: #3a3a3a;
+    border-color: #666;
+    color: #bbb;
+}
+
+html[data-theme="dark"] .kalender-tag.nachtrag {
+    background: #4a4a1e;
+    border-color: #ffc107;
+    color: #ffd700;
+}
+
+.tag-nummer {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.tag-wert {
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+html[data-theme="light"] .tab-btn {
+    color: #007aff;
 }

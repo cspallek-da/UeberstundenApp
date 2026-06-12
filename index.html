@@ -52,76 +52,122 @@
         <p>Tages-Einträge kannst du bearbeiten. Monats-Nachträge bitte löschen und neu anlegen.</p>
 
         <h3>Backup</h3>
-        <p>Mit „Daten exportieren“ sicherst du deine Daten als JSON-Datei.</p>
-        <p>Auf dem iPhone öffnet sich das Teilen-Menü. Wähle z. B. „In Dateien sichern“.</p>
+        <p>Mit „Daten exportieren" sicherst du deine Daten als JSON-Datei.</p>
+        <p>Auf dem iPhone öffnet sich das Teilen-Menü. Wähle z. B. „In Dateien sichern".</p>
         <p>Beim Import ersetzt die Backup-Datei die aktuellen Daten.</p>
 
-        <p><b>Version:</b> 1.2</p>
+        <h3>Kalender-Ansicht</h3>
+        <p>Im Reiter "Kalender" kannst du alle Einträge eines Monats als Kalender-Grid sehen.</p>
+        <p>🟢 Grün = Überstunden | 🔴 Rot = Minus | 💛 Gelb = Nachtrag</p>
+        <p>Klick auf einen Tag um Details zu sehen.</p>
+
+        <p><b>Version:</b> 1.3</p>
 
         <button onclick="hilfeAusblenden()">Schließen</button>
     </div>
 
-    <div class="card">
-        <h2>Tages-Eintrag</h2>
-
-        <label>Datum</label>
-        <input type="date" id="datum">
-
-        <label>Kommen</label>
-        <input type="time" id="kommen">
-
-        <label>Gehen</label>
-        <input type="time" id="gehen">
-
-        <label>Pause in Minuten</label>
-        <input type="number" id="pause" value="30">
-
-        <label>Sollzeit in Stunden</label>
-        <input type="number" id="sollzeit" step="0.01" value="6">
-
-        <label>Bemerkung</label>
-        <input type="text" id="bemerkung" placeholder="z.B. länger gearbeitet">
-
-        <button id="speichernButton" onclick="speichern()">Speichern</button>
+    <!-- Tabs Navigation -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('eintrag-tab', this)">📝 Einträge</button>
+        <button class="tab-btn" onclick="switchTab('kalender-tab', this)">📅 Kalender</button>
+        <button class="tab-btn" onclick="switchTab('backup-tab', this)">💾 Backup</button>
     </div>
 
-    <div class="card">
-        <h2>Monats-Nachtrag</h2>
+    <!-- Tab: Eintrag -->
+    <div id="eintrag-tab" class="tab-content active">
+        <div class="card">
+            <h2>Tages-Eintrag</h2>
 
-        <label>Monat</label>
-        <input type="month" id="nachtragMonat">
+            <label>Datum</label>
+            <input type="date" id="datum">
 
-        <label>Überstunden Stunden</label>
-        <input type="number" id="nachtragStunden" placeholder="z.B. 8 oder -2">
+            <label>Kommen</label>
+            <input type="time" id="kommen">
 
-        <label>Überstunden Minuten</label>
-        <input type="number" id="nachtragMinuten" min="0" max="59" value="0">
+            <label>Gehen</label>
+            <input type="time" id="gehen">
 
-        <label>Bemerkung</label>
-        <input type="text" id="nachtragBemerkung" placeholder="z.B. Nachtrag Mai">
+            <label>Pause in Minuten</label>
+            <input type="number" id="pause" value="30">
 
-        <button onclick="monatsNachtragSpeichern()">Nachtrag speichern</button>
+            <label>Sollzeit in Stunden</label>
+            <input type="number" id="sollzeit" step="0.01" value="6">
+
+            <label>Bemerkung</label>
+            <input type="text" id="bemerkung" placeholder="z.B. länger gearbeitet">
+
+            <button id="speichernButton" onclick="speichern()">Speichern</button>
+        </div>
+
+        <div class="card">
+            <h2>Monats-Nachtrag</h2>
+
+            <label>Monat</label>
+            <input type="month" id="nachtragMonat">
+
+            <label>Überstunden Stunden</label>
+            <input type="number" id="nachtragStunden" placeholder="z.B. 8 oder -2">
+
+            <label>Überstunden Minuten</label>
+            <input type="number" id="nachtragMinuten" min="0" max="59" value="0">
+
+            <label>Bemerkung</label>
+            <input type="text" id="nachtragBemerkung" placeholder="z.B. Nachtrag Mai">
+
+            <button onclick="monatsNachtragSpeichern()">Nachtrag speichern</button>
+        </div>
+
+        <h2>Gesamtsaldo: <span id="saldo">0h 0min</span></h2>
+
+        <h2>Monatsübersicht</h2>
+        <div id="monatsuebersicht"></div>
+
+        <h2>Einträge</h2>
+        <div id="liste"></div>
     </div>
 
-    <div class="card">
-        <h2>Backup</h2>
+    <!-- Tab: Kalender -->
+    <div id="kalender-tab" class="tab-content">
+        <div class="card">
+            <div class="kalender-header">
+                <button class="nav-btn" onclick="vorherMonat()">⬅️</button>
+                <h2 id="kalenderTitel">Juni 2026</h2>
+                <button class="nav-btn" onclick="naechsterMonat()">➡️</button>
+            </div>
 
-        <button onclick="exportieren()">Daten exportieren</button>
-        <button onclick="pdfAnsicht()"> 📄 PDF / Bericht anzeigen </button>
+            <div class="kalender-wochentage">
+                <div class="wochentag">Mo</div>
+                <div class="wochentag">Di</div>
+                <div class="wochentag">Mi</div>
+                <div class="wochentag">Do</div>
+                <div class="wochentag">Fr</div>
+                <div class="wochentag">Sa</div>
+                <div class="wochentag">So</div>
+            </div>
 
-        <label>Backup importieren</label>
-        <input type="file" id="importDatei" accept=".json,application/json" onchange="importieren(event)">
-        
+            <div id="kalender" class="kalender-grid"></div>
+
+            <div id="kalenderDetails" style="margin-top: 20px; display: none;">
+                <h3>Details für <span id="selectedDate"></span></h3>
+                <div id="selectedDateDetails"></div>
+                <button onclick="closeDetails()">Zurück</button>
+            </div>
+        </div>
     </div>
-    
 
-    <h2>Gesamtsaldo: <span id="saldo">0h 0min</span></h2>
+    <!-- Tab: Backup -->
+    <div id="backup-tab" class="tab-content">
+        <div class="card">
+            <h2>Backup</h2>
 
-    <h2>Monatsübersicht</h2>
-    <div id="monatsuebersicht"></div>
+            <button onclick="exportieren()">Daten exportieren</button>
+            <button onclick="pdfAnsicht()"> 📄 PDF / Bericht anzeigen </button>
 
-    <h2>Einträge</h2>
-    <div id="liste"></div>
+            <label>Backup importieren</label>
+            <input type="file" id="importDatei" accept=".json,application/json" onchange="importieren(event)">
+            
+        </div>
+    </div>
 
     <script src="app.js"></script>
 

@@ -31,7 +31,7 @@ function themeLaden() {
 
 document.addEventListener("DOMContentLoaded", themeLaden);
 
-function switchTab(tabId) {
+function switchTab(tabId, button) {
     // Hide all tabs
     document.querySelectorAll(".tab-content").forEach(tab => {
         tab.classList.remove("active");
@@ -46,7 +46,7 @@ function switchTab(tabId) {
     document.getElementById(tabId).classList.add("active");
 
     // Add active to clicked button
-    event.target.classList.add("active");
+    button.classList.add("active");
 
     // Render calendar if switching to calendar tab
     if (tabId === "kalender-tab") {
@@ -618,7 +618,7 @@ function zeigeDetailsTag(datum, eintragData) {
             <p><strong>Sollzeit:</strong> ${formatZeit(eintrag.sollzeit)}</p>
             <p><strong>Überstunden:</strong> <span class="${eintrag.ueberstunden >= 0 ? 'plus' : 'minus'}">${formatZeit(eintrag.ueberstunden)}</span></p>
             <p><strong>Bemerkung:</strong> ${eintrag.bemerkung || "-"}</p>
-            <button style="width: 100%; margin-top: 10px;" onclick="bearbeiten(${index}); switchTab('eintrag-tab');">Bearbeiten</button>
+            <button style="width: 100%; margin-top: 10px;" onclick="bearbeiten(${index}); switchTab('eintrag-tab', document.querySelectorAll('.tab-btn')[0]);">Bearbeiten</button>
             <button style="width: 100%; margin-top: 10px; background: #dc3545;" onclick="loeschen(${index}); renderKalender();">Löschen</button>
         `;
     }
