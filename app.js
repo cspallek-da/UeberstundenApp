@@ -351,53 +351,10 @@ function anzeigen() {
 
 function pdfAnsicht() {
 
-    let bericht = `
-    <html>
-    <head>
-        <title>TimeBalance Bericht</title>
-
-        <style>
-
-            body {
-                font-family: Arial, sans-serif;
-                padding: 20px;
-            }
-
-            h1,h2 {
-                text-align:center;
-            }
-
-            table {
-                width:100%;
-                border-collapse: collapse;
-            }
-
-            th, td {
-                border:1px solid #ccc;
-                padding:8px;
-            }
-
-        </style>
-
-    </head>
-
-    <body>
-
-    <h1>TimeBalance Bericht</h1>
-
-    <h2>
-        Gesamtsaldo:
-        ${document.getElementById("saldo").textContent}
-    </h2>
-
-    <h2>Monatsübersicht</h2>
-    `;
-
     let monate = {};
 
     eintraege.forEach(e => {
-
-        const monat = e.datum.substring(0,7);
+        const monat = e.datum.substring(0, 7);
 
         if (!monate[monat]) {
             monate[monat] = 0;
@@ -406,17 +363,83 @@ function pdfAnsicht() {
         monate[monat] += e.ueberstunden;
     });
 
-    Object.keys(monate)
-        .sort()
-        .forEach(monat => {
+    let bericht = `
+    <html>
+    <head>
+        <title>TimeBalance Bericht</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-            bericht += `
-                <p>
-                    <b>${monat}</b>:
-                    ${formatZeit(monate[monat])}
-                </p>
-            `;
-        });
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+                color: #000;
+                background: #fff;
+            }
+
+            h1, h2 {
+                text-align: center;
+            }
+
+            .actions {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+
+            button {
+                flex: 1;
+                padding: 12px;
+                font-size: 16px;
+                border: none;
+                border-radius: 8px;
+                background: #007aff;
+                color: white;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+            }
+
+            th, td {
+                border: 1px solid #ccc;
+                padding: 8px;
+                text-align: left;
+            }
+
+            th {
+                background: #f0f0f0;
+            }
+
+            @media print {
+                .actions {
+                    display: none;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+
+        <div class="actions">
+            <button onclick="history.back()">⬅️ Zurück</button>
+            <button onclick="window.print()">🖨️ Drucken / PDF</button>
+        </div>
+
+        <h1>TimeBalance Bericht</h1>
+
+        <h2>Gesamtsaldo: ${document.getElementById("saldo").textContent}</h2>
+
+        <h2>Monatsübersicht</h2>
+    `;
+
+    Object.keys(monate).sort().forEach(monat => {
+        bericht += `
+            <p><b>${monat}</b>: ${formatZeit(monate[monat])}</p>
+        `;
+    });
 
     bericht += `
         <h2>Einträge</h2>
@@ -430,7 +453,6 @@ function pdfAnsicht() {
     `;
 
     eintraege.forEach(e => {
-
         bericht += `
             <tr>
                 <td>${e.datum}</td>
@@ -443,17 +465,15 @@ function pdfAnsicht() {
     bericht += `
         </table>
 
-        <p>
-            Erstellt am:
-            ${new Date().toLocaleString("de-DE")}
-        </p>
+        <p>Erstellt am: ${new Date().toLocaleString("de-DE")}</p>
 
     </body>
     </html>
     `;
 
-    const fenster = window.open("", "_blank");
+    const fenster = window.open("", "_self");
 
+    fenster.document.open();
     fenster.document.write(bericht);
     fenster.document.close();
 }
