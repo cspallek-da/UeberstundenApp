@@ -618,9 +618,10 @@ function renderKalender() {
         if (datum === heuteString) {
             className += " heute";
         }
+
         if (datum === ausgewaehltesKalenderDatum) {
-    className += " ausgewaehlt";
-}
+            className += " ausgewaehlt";
+        }
 
         if (eintraegeProTag[datum]) {
             const eintrag = eintraegeProTag[datum].eintrag;
@@ -653,16 +654,21 @@ function renderKalender() {
             ${wert ? `<span class="tag-wert ${wertKlasse}">${wert}</span>` : ""}
         `;
 
-div.onclick = () => {
-    ausgewaehltesKalenderDatum = datum;
-    renderKalender();
+        div.onclick = () => {
+            ausgewaehltesKalenderDatum = datum;
 
-    if (eintraegeProTag[datum]) {
-        zeigeDetailsTag(datum, eintraegeProTag[datum]);
-    } else {
-        zeigeQuickAddForm(datum);
-    }
-};
+            document.querySelectorAll(".kalender-tag").forEach(tagElement => {
+                tagElement.classList.remove("ausgewaehlt");
+            });
+
+            div.classList.add("ausgewaehlt");
+
+            if (eintraegeProTag[datum]) {
+                zeigeDetailsTag(datum, eintraegeProTag[datum]);
+            } else {
+                zeigeQuickAddForm(datum);
+            }
+        };
 
         kalenderGrid.appendChild(div);
     }
