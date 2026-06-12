@@ -593,7 +593,7 @@ function renderKalender() {
         leerDiv.className = "kalender-tag leer";
         kalenderGrid.appendChild(leerDiv);
     }
-
+}
     // Tage des Monats
 const datum = `${jahr}-${String(monat + 1).padStart(2, '0')}-${String(tag).padStart(2, '0')}`;
 const div = document.createElement("div");
