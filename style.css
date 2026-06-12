@@ -469,3 +469,17 @@ html[data-theme="dark"] .kalender-tag.nachtrag {
 html[data-theme="light"] .tab-btn {
     color: #007aff;
 }
+
+/* Heutigen Tag im Kalender markieren */
+
+.kalender-tag.heute {
+    border: 3px solid #ff9500 !important;
+    box-shadow: 0 0 10px rgba(255, 149, 0, 0.8);
+    transform: scale(1.03);
+}
+
+html[data-theme="dark"] .kalender-tag.heute,
+html[data-theme="system"] .kalender-tag.heute {
+    border: 3px solid #ffcc00 !important;
+    box-shadow: 0 0 12px rgba(255, 204, 0, 0.9);
+}
