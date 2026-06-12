@@ -32,6 +32,9 @@ function themeLaden() {
 document.addEventListener("DOMContentLoaded", themeLaden);
 
 function switchTab(tabId, button) {
+
+    closeDetails();
+
     document.querySelectorAll(".tab-content").forEach(tab => {
         tab.classList.remove("active");
     });
