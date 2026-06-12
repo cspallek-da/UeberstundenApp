@@ -66,14 +66,12 @@
         <button onclick="hilfeAusblenden()">Schließen</button>
     </div>
 
-    <!-- Tabs Navigation -->
     <div class="tabs">
         <button class="tab-btn active" onclick="switchTab('eintrag-tab', this)">📝 Einträge</button>
         <button class="tab-btn" onclick="switchTab('kalender-tab', this)">📅 Kalender</button>
         <button class="tab-btn" onclick="switchTab('backup-tab', this)">💾 Backup</button>
     </div>
 
-    <!-- Tab: Eintrag -->
     <div id="eintrag-tab" class="tab-content active">
         <div class="card">
             <h2>Tages-Eintrag</h2>
@@ -126,7 +124,6 @@
         <div id="liste"></div>
     </div>
 
-    <!-- Tab: Kalender -->
     <div id="kalender-tab" class="tab-content">
         <div class="card">
             <div class="kalender-header">
@@ -147,28 +144,25 @@
 
             <div id="kalender" class="kalender-grid"></div>
         </div>
+
+        <div id="kalenderDetails" class="kalender-details-modal" style="display:none;">
+            <div class="kalender-details-content">
+                <h3>Details für <span id="selectedDate"></span></h3>
+                <div id="selectedDateDetails"></div>
+                <button onclick="closeDetails()">Zurück</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Kalender Details Modal (Outside Card) -->
-<div id="kalenderDetails" class="kalender-details-modal" style="display:none;">
-    <div class="kalender-details-content">
-        <h3>Details für <span id="selectedDate"></span></h3>
-        <div id="selectedDateDetails"></div>
-        <button onclick="closeDetails()">Zurück</button>
-    </div>
-</div>
-
-    <!-- Tab: Backup -->
     <div id="backup-tab" class="tab-content">
         <div class="card">
             <h2>Backup</h2>
 
             <button onclick="exportieren()">Daten exportieren</button>
-            <button onclick="pdfAnsicht()"> 📄 PDF / Bericht anzeigen </button>
+            <button onclick="pdfAnsicht()">📄 PDF / Bericht anzeigen</button>
 
             <label>Backup importieren</label>
             <input type="file" id="importDatei" accept=".json,application/json" onchange="importieren(event)">
-            
         </div>
     </div>
 
