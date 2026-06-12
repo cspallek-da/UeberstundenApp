@@ -424,7 +424,7 @@ function pdfAnsicht() {
     <body>
 
         <div class="actions">
-            <button onclick="history.back()">⬅️ Zurück</button>
+            <button onclick="location.href='index.html'">⬅️ Zurück zur App</button>
             <button onclick="window.print()">🖨️ Drucken / PDF</button>
         </div>
 
