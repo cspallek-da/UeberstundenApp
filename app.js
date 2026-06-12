@@ -601,55 +601,75 @@ const div = document.createElement("div");
 let className = "kalender-tag";
 
 /* Heutiges Datum markieren */
+// Heutiges Datum
 const heute = new Date();
 const heuteString =
     `${heute.getFullYear()}-${String(heute.getMonth() + 1).padStart(2, '0')}-${String(heute.getDate()).padStart(2, '0')}`;
 
-if (datum === heuteString) {
-    className += " heute";
-}
-        let wert = "";
-        let wertKlasse = "";
+// Tage des Monats
+for (let tag = 1; tag <= anzahlTage; tag++) {
 
-        if (eintraegeProTag[datum]) {
-            const eintrag = eintraegeProTag[datum].eintrag;
-            const ueberstunden = eintrag.ueberstunden || 0;
+    const datum =
+        `${jahr}-${String(monat + 1).padStart(2, '0')}-${String(tag).padStart(2, '0')}`;
 
-            if (eintrag.typ === "nachtrag") {
-                className += " nachtrag";
-                wert = formatZeit(ueberstunden);
-            } else {
-                if (ueberstunden > 0) {
-                    className += " plus";
-                    wertKlasse = "plus";
-                } else if (ueberstunden < 0) {
-                    className += " minus";
-                    wertKlasse = "minus";
-                } else {
-                    className += " neutral";
-                }
-                wert = formatZeit(ueberstunden);
-            }
+    const div = document.createElement("div");
+
+    let className = "kalender-tag";
+
+    if (datum === heuteString) {
+        className += " heute";
+    }
+
+    let wert = "";
+    let wertKlasse = "";
+
+    if (eintraegeProTag[datum]) {
+
+        const eintrag = eintraegeProTag[datum].eintrag;
+        const ueberstunden = eintrag.ueberstunden || 0;
+
+        if (eintrag.typ === "nachtrag") {
+
+            className += " nachtrag";
+            wert = formatZeit(ueberstunden);
+
         } else {
-            className += " neutral";
+
+            if (ueberstunden > 0) {
+                className += " plus";
+                wertKlasse = "plus";
+            } else if (ueberstunden < 0) {
+                className += " minus";
+                wertKlasse = "minus";
+            } else {
+                className += " neutral";
+            }
+
+            wert = formatZeit(ueberstunden);
         }
 
-        div.className = className;
-        div.innerHTML = `
-            <span class="tag-nummer">${tag}</span>
-            ${wert ? `<span class="tag-wert ${wertKlasse}">${wert}</span>` : ""}
-        `;
+    } else {
 
-        div.onclick = () => {
-            if (eintraegeProTag[datum]) {
-                zeigeDetailsTag(datum, eintraegeProTag[datum]);
-            } else {
-                zeigeQuickAddForm(datum);
-            }
-        };
-
-        kalenderGrid.appendChild(div);
+        className += " neutral";
     }
+
+    div.className = className;
+
+    div.innerHTML = `
+        <span class="tag-nummer">${tag}</span>
+        ${wert ? `<span class="tag-wert ${wertKlasse}">${wert}</span>` : ""}
+    `;
+
+    div.onclick = () => {
+
+        if (eintraegeProTag[datum]) {
+            zeigeDetailsTag(datum, eintraegeProTag[datum]);
+        } else {
+            zeigeQuickAddForm(datum);
+        }
+    };
+
+    kalenderGrid.appendChild(div);
 }
 
 function zeigeDetailsTag(datum, eintragData) {
