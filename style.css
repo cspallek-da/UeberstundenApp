@@ -483,3 +483,13 @@ html[data-theme="system"] .kalender-tag.heute {
     border: 3px solid #ffcc00 !important;
     box-shadow: 0 0 12px rgba(255, 204, 0, 0.9);
 }
+.kalender-tag.ausgewaehlt {
+    border: 4px solid #00c853 !important;
+    box-shadow: 0 0 14px rgba(0, 200, 83, 0.9);
+}
+
+html[data-theme="dark"] .kalender-tag.ausgewaehlt,
+html[data-theme="system"] .kalender-tag.ausgewaehlt {
+    border: 4px solid #00e676 !important;
+    box-shadow: 0 0 16px rgba(0, 230, 118, 0.95);
+}
