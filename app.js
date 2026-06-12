@@ -595,11 +595,19 @@ function renderKalender() {
     }
 
     // Tage des Monats
-    for (let tag = 1; tag <= anzahlTage; tag++) {
-        const datum = `${jahr}-${String(monat + 1).padStart(2, '0')}-${String(tag).padStart(2, '0')}`;
-        const div = document.createElement("div");
-        
-        let className = "kalender-tag";
+const datum = `${jahr}-${String(monat + 1).padStart(2, '0')}-${String(tag).padStart(2, '0')}`;
+const div = document.createElement("div");
+
+let className = "kalender-tag";
+
+/* Heutiges Datum markieren */
+const heute = new Date();
+const heuteString =
+    `${heute.getFullYear()}-${String(heute.getMonth() + 1).padStart(2, '0')}-${String(heute.getDate()).padStart(2, '0')}`;
+
+if (datum === heuteString) {
+    className += " heute";
+}
         let wert = "";
         let wertKlasse = "";
 
