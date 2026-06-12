@@ -48,13 +48,16 @@
         <p><b>Beispiel:</b> Stunden 8 und Minuten 15 ergibt 8h 15min.</p>
         <p><b>Minus-Beispiel:</b> Stunden -2 und Minuten 30 ergibt -2h 30min.</p>
 
+        <h3>Einstellungen</h3>
+        <p>Im Reiter „Einstellungen" kannst du Name, Firma, Abteilung und Personalnummer für den PDF-Bericht speichern.</p>
+
         <h3>Bearbeiten / Löschen</h3>
         <p>Tages-Einträge kannst du bearbeiten. Monats-Nachträge bitte löschen und neu anlegen.</p>
 
         <h3>Backup</h3>
         <p>Mit „Daten exportieren" sicherst du deine Daten als JSON-Datei.</p>
         <p>Auf dem iPhone öffnet sich das Teilen-Menü. Wähle z. B. „In Dateien sichern".</p>
-        <p>Beim Import ersetzt die Backup-Datei die aktuellen Daten.</p>
+        <p>Beim Import ersetzt die Backup-Datei die aktuellen Daten und übernimmt vorhandene Einstellungen.</p>
 
         <h3>PDF / Bericht</h3>
         <p>Im Reiter "Backup" kannst du vor dem PDF-Bericht auswählen, ob alle Einträge, ein ganzes Jahr oder nur ein bestimmter Monat ausgegeben werden sollen.</p>
@@ -64,7 +67,7 @@
         <p>🟢 Grün = Überstunden | 🔴 Rot = Minus | 💛 Gelb = Nachtrag</p>
         <p>Klick auf einen Tag um Details zu sehen.</p>
 
-        <p><b>Version:</b> 1.4</p>
+        <p><b>Version:</b> 1.5</p>
 
         <button onclick="hilfeAusblenden()">Schließen</button>
     </div>
@@ -73,6 +76,7 @@
         <button class="tab-btn active" onclick="switchTab('eintrag-tab', this)">📝 Einträge</button>
         <button class="tab-btn" onclick="switchTab('kalender-tab', this)">📅 Kalender</button>
         <button class="tab-btn" onclick="switchTab('backup-tab', this)">💾 Backup</button>
+        <button class="tab-btn" onclick="switchTab('einstellungen-tab', this)">⚙️ Einstellungen</button>
     </div>
 
     <div id="eintrag-tab" class="tab-content active">
@@ -189,9 +193,31 @@
         </div>
     </div>
 
+    <div id="einstellungen-tab" class="tab-content">
+        <div class="card">
+            <h2>⚙️ Einstellungen</h2>
+            <p>Diese Angaben erscheinen später im PDF-Bericht.</p>
+
+            <label>Name</label>
+            <input type="text" id="einstellungName" placeholder="z.B. Cengiz Spallek">
+
+            <label>Firma</label>
+            <input type="text" id="einstellungFirma" placeholder="z.B. Deutsche Telekom">
+
+            <label>Abteilung</label>
+            <input type="text" id="einstellungAbteilung" placeholder="z.B. Wholesale">
+
+            <label>Personalnummer</label>
+            <input type="text" id="einstellungPersonalnummer" placeholder="optional">
+
+            <button onclick="speichereEinstellungen()">Einstellungen speichern</button>
+        </div>
+    </div>
+
     <script src="app.js"></script>
     <script src="pdf.js"></script>
     <script src="date-format.js"></script>
+    <script src="settings.js"></script>
 
     <script>
         if ('serviceWorker' in navigator) {
