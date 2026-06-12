@@ -505,6 +505,9 @@ function pdfAnsicht() {
 // KALENDER FUNKTIONEN
 
 function renderKalender() {
+    // Close details when month changes
+    closeDetails();
+    
     const jahr = aktuellerKalenderMonat.getFullYear();
     const monat = aktuellerKalenderMonat.getMonth();
 
