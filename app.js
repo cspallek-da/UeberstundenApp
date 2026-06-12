@@ -1,6 +1,7 @@
 let eintraege = JSON.parse(localStorage.getItem("timebalance_eintraege")) || [];
 let bearbeitungsIndex = null;
 let aktuellerKalenderMonat = new Date();
+let ausgewaehltesKalenderDatum = null;
 
 function setTheme(theme) {
     localStorage.setItem("timebalance_theme", theme);
@@ -617,6 +618,9 @@ function renderKalender() {
         if (datum === heuteString) {
             className += " heute";
         }
+        if (datum === ausgewaehltesKalenderDatum) {
+    className += " ausgewaehlt";
+}
 
         if (eintraegeProTag[datum]) {
             const eintrag = eintraegeProTag[datum].eintrag;
@@ -649,13 +653,16 @@ function renderKalender() {
             ${wert ? `<span class="tag-wert ${wertKlasse}">${wert}</span>` : ""}
         `;
 
-        div.onclick = () => {
-            if (eintraegeProTag[datum]) {
-                zeigeDetailsTag(datum, eintraegeProTag[datum]);
-            } else {
-                zeigeQuickAddForm(datum);
-            }
-        };
+div.onclick = () => {
+    ausgewaehltesKalenderDatum = datum;
+    renderKalender();
+
+    if (eintraegeProTag[datum]) {
+        zeigeDetailsTag(datum, eintraegeProTag[datum]);
+    } else {
+        zeigeQuickAddForm(datum);
+    }
+};
 
         kalenderGrid.appendChild(div);
     }
