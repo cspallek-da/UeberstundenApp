@@ -14,10 +14,19 @@
     <link rel="apple-touch-icon" href="icon-192.png">
 
     <link rel="stylesheet" href="style.css">
+    <meta name="color-scheme" content="light dark">
 </head>
 <body>
 
     <h1>TimeBalance</h1>
+    <div class="theme-switcher">
+    <label>Design</label>
+    <select id="themeSelect" onchange="themeWechseln()">
+        <option value="system">System</option>
+        <option value="light">Hell</option>
+        <option value="dark">Dunkel</option>
+    </select>
+</div>
 
     <button onclick="hilfeAnzeigen()">❓ Hilfe / Anleitung</button>
 
