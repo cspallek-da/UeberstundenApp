@@ -103,3 +103,88 @@ button {
         color: #ffffff;
     }
 }
+
+.theme-switcher {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.theme-switcher select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 8px;
+}
+
+/* Hell erzwingen */
+html[data-theme="light"] body {
+    background: #f4f4f4;
+    color: #000;
+}
+
+html[data-theme="light"] .card,
+html[data-theme="light"] .eintrag,
+html[data-theme="light"] #hilfeBox,
+html[data-theme="light"] .theme-switcher {
+    background: white;
+    color: #000;
+}
+
+html[data-theme="light"] input,
+html[data-theme="light"] select {
+    background: white;
+    color: #000;
+}
+
+/* Dunkel erzwingen */
+html[data-theme="dark"] body {
+    background: #121212;
+    color: #fff;
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .eintrag,
+html[data-theme="dark"] #hilfeBox,
+html[data-theme="dark"] .theme-switcher {
+    background: #1e1e1e !important;
+    color: #fff;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] select {
+    background: #2b2b2b;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+html[data-theme="dark"] input::placeholder {
+    color: #aaa;
+}
+
+/* System Dark Mode */
+@media (prefers-color-scheme: dark) {
+    html[data-theme="system"] body {
+        background: #121212;
+        color: #fff;
+    }
+
+    html[data-theme="system"] .card,
+    html[data-theme="system"] .eintrag,
+    html[data-theme="system"] #hilfeBox,
+    html[data-theme="system"] .theme-switcher {
+        background: #1e1e1e !important;
+        color: #fff;
+    }
+
+    html[data-theme="system"] input,
+    html[data-theme="system"] select {
+        background: #2b2b2b;
+        color: #fff;
+        border: 1px solid #555;
+    }
+
+    html[data-theme="system"] input::placeholder {
+        color: #aaa;
+    }
+}
