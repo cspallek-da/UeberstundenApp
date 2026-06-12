@@ -1,5 +1,6 @@
 let eintraege = JSON.parse(localStorage.getItem("timebalance_eintraege")) || [];
 let bearbeitungsIndex = null;
+let aktuellerKalenderMonat = new Date();
 
 function setTheme(theme) {
     localStorage.setItem("timebalance_theme", theme);
@@ -29,6 +30,29 @@ function themeLaden() {
 }
 
 document.addEventListener("DOMContentLoaded", themeLaden);
+
+function switchTab(tabId) {
+    // Hide all tabs
+    document.querySelectorAll(".tab-content").forEach(tab => {
+        tab.classList.remove("active");
+    });
+
+    // Remove active from all buttons
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.remove("active");
+    });
+
+    // Show selected tab
+    document.getElementById(tabId).classList.add("active");
+
+    // Add active to clicked button
+    event.target.classList.add("active");
+
+    // Render calendar if switching to calendar tab
+    if (tabId === "kalender-tab") {
+        renderKalender();
+    }
+}
 
 function hilfeAnzeigen() {
     document.getElementById("hilfeBox").style.display = "block";
@@ -477,4 +501,146 @@ function pdfAnsicht() {
     fenster.document.write(bericht);
     fenster.document.close();
 }
+
+// KALENDER FUNKTIONEN
+
+function renderKalender() {
+    const jahr = aktuellerKalenderMonat.getFullYear();
+    const monat = aktuellerKalenderMonat.getMonth();
+
+    // Titel aktualisieren
+    const monate = [
+        "Januar", "Februar", "März", "April", "Mai", "Juni",
+        "Juli", "August", "September", "Oktober", "November", "Dezember"
+    ];
+    document.getElementById("kalenderTitel").textContent = `${monate[monat]} ${jahr}`;
+
+    // Einträge für diesen Monat gruppieren
+    const eintraegeProTag = {};
+    eintraege.forEach((eintrag, index) => {
+        if (eintrag.datum.startsWith(`${jahr}-${String(monat + 1).padStart(2, '0')}`)) {
+            eintraegeProTag[eintrag.datum] = {
+                eintrag: eintrag,
+                index: index
+            };
+        }
+    });
+
+    // Kalender-Grid vorbereiten
+    const erstertag = new Date(jahr, monat, 1);
+    const letztesTag = new Date(jahr, monat + 1, 0);
+    const ersterwochentag = erstertag.getDay(); // 0 = Sonntag, 1 = Montag
+    const anzahlTage = letztesTag.getDate();
+
+    const kalenderGrid = document.getElementById("kalender");
+    kalenderGrid.innerHTML = "";
+
+    // Leere Tage am Anfang (Montag = 1)
+    for (let i = 1; i < ersterwochentag; i++) {
+        const leerDiv = document.createElement("div");
+        leerDiv.className = "kalender-tag leer";
+        kalenderGrid.appendChild(leerDiv);
+    }
+
+    // Tage des Monats
+    for (let tag = 1; tag <= anzahlTage; tag++) {
+        const datum = `${jahr}-${String(monat + 1).padStart(2, '0')}-${String(tag).padStart(2, '0')}`;
+        const div = document.createElement("div");
+        
+        let className = "kalender-tag";
+        let wert = "";
+        let wertKlasse = "";
+
+        if (eintraegeProTag[datum]) {
+            const eintrag = eintraegeProTag[datum].eintrag;
+            const ueberstunden = eintrag.ueberstunden || 0;
+
+            if (eintrag.typ === "nachtrag") {
+                className += " nachtrag";
+                wert = formatZeit(ueberstunden);
+            } else {
+                if (ueberstunden > 0) {
+                    className += " plus";
+                    wertKlasse = "plus";
+                } else if (ueberstunden < 0) {
+                    className += " minus";
+                    wertKlasse = "minus";
+                } else {
+                    className += " neutral";
+                }
+                wert = formatZeit(ueberstunden);
+            }
+        } else {
+            className += " neutral";
+        }
+
+        div.className = className;
+        div.innerHTML = `
+            <span class="tag-nummer">${tag}</span>
+            ${wert ? `<span class="tag-wert ${wertKlasse}">${wert}</span>` : ""}
+        `;
+
+        div.onclick = () => zeigeDetailsTag(datum, eintraegeProTag[datum]);
+
+        kalenderGrid.appendChild(div);
+    }
+}
+
+function zeigeDetailsTag(datum, eintragData) {
+    if (!eintragData) {
+        return;
+    }
+
+    const eintrag = eintragData.eintrag;
+    const index = eintragData.index;
+
+    const detailsDiv = document.getElementById("kalenderDetails");
+    const dateSpan = document.getElementById("selectedDate");
+    const detailsContent = document.getElementById("selectedDateDetails");
+
+    dateSpan.textContent = datum;
+
+    let html = `<div style="margin: 15px 0;">`;
+
+    if (eintrag.typ === "nachtrag") {
+        html += `
+            <p><strong>Typ:</strong> Monats-Nachtrag</p>
+            <p><strong>Überstunden:</strong> <span class="${eintrag.ueberstunden >= 0 ? 'plus' : 'minus'}">${formatZeit(eintrag.ueberstunden)}</span></p>
+            <p><strong>Bemerkung:</strong> ${eintrag.bemerkung || "-"}</p>
+            <button style="width: 100%; margin-top: 10px;" onclick="loeschen(${index}); renderKalender();">Löschen</button>
+        `;
+    } else {
+        html += `
+            <p><strong>Kommen:</strong> ${eintrag.kommen}</p>
+            <p><strong>Gehen:</strong> ${eintrag.gehen}</p>
+            <p><strong>Pause:</strong> ${eintrag.pause} Minuten</p>
+            <p><strong>Arbeitszeit:</strong> ${formatZeit(eintrag.arbeitsstunden)}</p>
+            <p><strong>Sollzeit:</strong> ${formatZeit(eintrag.sollzeit)}</p>
+            <p><strong>Überstunden:</strong> <span class="${eintrag.ueberstunden >= 0 ? 'plus' : 'minus'}">${formatZeit(eintrag.ueberstunden)}</span></p>
+            <p><strong>Bemerkung:</strong> ${eintrag.bemerkung || "-"}</p>
+            <button style="width: 100%; margin-top: 10px;" onclick="bearbeiten(${index}); switchTab('eintrag-tab');">Bearbeiten</button>
+            <button style="width: 100%; margin-top: 10px; background: #dc3545;" onclick="loeschen(${index}); renderKalender();">Löschen</button>
+        `;
+    }
+
+    html += `</div>`;
+
+    detailsContent.innerHTML = html;
+    detailsDiv.style.display = "block";
+}
+
+function closeDetails() {
+    document.getElementById("kalenderDetails").style.display = "none";
+}
+
+function vorherMonat() {
+    aktuellerKalenderMonat.setMonth(aktuellerKalenderMonat.getMonth() - 1);
+    renderKalender();
+}
+
+function naechsterMonat() {
+    aktuellerKalenderMonat.setMonth(aktuellerKalenderMonat.getMonth() + 1);
+    renderKalender();
+}
+
 anzeigen();
