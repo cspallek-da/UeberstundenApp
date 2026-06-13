@@ -5,7 +5,8 @@ function ladeEinstellungen() {
         name: einstellungen.name || "",
         firma: einstellungen.firma || "",
         abteilung: einstellungen.abteilung || "",
-        personalnummer: einstellungen.personalnummer || ""
+        personalnummer: einstellungen.personalnummer || "",
+        vorgesetzter: einstellungen.vorgesetzter || ""
     };
 }
 
@@ -14,7 +15,8 @@ function speichereEinstellungen() {
         name: document.getElementById("einstellungName").value.trim(),
         firma: document.getElementById("einstellungFirma").value.trim(),
         abteilung: document.getElementById("einstellungAbteilung").value.trim(),
-        personalnummer: document.getElementById("einstellungPersonalnummer").value.trim()
+        personalnummer: document.getElementById("einstellungPersonalnummer").value.trim(),
+        vorgesetzter: document.getElementById("einstellungVorgesetzter").value.trim()
     };
 
     localStorage.setItem("timebalance_einstellungen", JSON.stringify(einstellungen));
@@ -28,8 +30,9 @@ function fuelleEinstellungenFormular() {
     const firma = document.getElementById("einstellungFirma");
     const abteilung = document.getElementById("einstellungAbteilung");
     const personalnummer = document.getElementById("einstellungPersonalnummer");
+    const vorgesetzter = document.getElementById("einstellungVorgesetzter");
 
-    if (!name || !firma || !abteilung || !personalnummer) {
+    if (!name || !firma || !abteilung || !personalnummer || !vorgesetzter) {
         return;
     }
 
@@ -37,6 +40,7 @@ function fuelleEinstellungenFormular() {
     firma.value = einstellungen.firma;
     abteilung.value = einstellungen.abteilung;
     personalnummer.value = einstellungen.personalnummer;
+    vorgesetzter.value = einstellungen.vorgesetzter;
 }
 
 function erstelleMitarbeiterBlockHtml() {
@@ -59,6 +63,10 @@ function erstelleMitarbeiterBlockHtml() {
         zeilen.push(`<p><b>Personalnummer:</b> ${htmlEscapen(einstellungen.personalnummer)}</p>`);
     }
 
+    if (einstellungen.vorgesetzter) {
+        zeilen.push(`<p><b>Vorgesetzter:</b> ${htmlEscapen(einstellungen.vorgesetzter)}</p>`);
+    }
+
     if (zeilen.length === 0) {
         return "";
     }
@@ -67,6 +75,10 @@ function erstelleMitarbeiterBlockHtml() {
 }
 
 function erstelleUnterschriftenBlockHtml() {
+    const einstellungen = ladeEinstellungen();
+    const mitarbeiterName = einstellungen.name ? `<p class="unterschrift-name">${htmlEscapen(einstellungen.name)}</p>` : "";
+    const vorgesetzterName = einstellungen.vorgesetzter ? `<p class="unterschrift-name">${htmlEscapen(einstellungen.vorgesetzter)}</p>` : "";
+
     return `
         <div class="unterschriften">
             <p>Ort, Datum: __________________________________________</p>
@@ -74,10 +86,12 @@ function erstelleUnterschriftenBlockHtml() {
             <div class="unterschriften-grid">
                 <div>
                     <p>__________________________________________</p>
+                    ${mitarbeiterName}
                     <p>Mitarbeiter</p>
                 </div>
                 <div>
                     <p>__________________________________________</p>
+                    ${vorgesetzterName}
                     <p>Vorgesetzter</p>
                 </div>
             </div>
@@ -88,7 +102,7 @@ function erstelleUnterschriftenBlockHtml() {
 async function exportieren() {
     const daten = {
         app: "TimeBalance",
-        version: "1.5",
+        version: "1.6",
         exportiertAm: new Date().toISOString(),
         einstellungen: ladeEinstellungen(),
         eintraege: eintraege
@@ -285,6 +299,11 @@ function pdfAnsichtMitAuswahl() {
                 grid-template-columns: 1fr 1fr;
                 gap: 40px;
                 margin-top: 40px;
+            }
+
+            .unterschrift-name {
+                margin: 6px 0 0 0;
+                font-weight: bold;
             }
 
             @media print {
