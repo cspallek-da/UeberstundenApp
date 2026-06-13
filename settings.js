@@ -298,7 +298,7 @@ function pdfAnsichtMitAuswahl() {
     bericht += `
         </table>
         <p>Erstellt am: ${new Date().toLocaleString("de-DE")}</p>
-        <p><b>Vorgeschlagener PDF-Dateiname:</b> ${htmlEscapen(pdfDateiname)}.pdf</p>
+        <p><b>PDF-Dateiname:</b> ${htmlEscapen(pdfDateiname)}.pdf</p>
         ${erstelleUnterschriftenBlockHtml()}
     </body>
     </html>
