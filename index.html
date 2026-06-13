@@ -62,8 +62,9 @@
 
         <h3>5. Einstellungen</h3>
         <p>Im Reiter „Einstellungen" kannst du persönliche Angaben speichern:</p>
-        <p>Name, Firma, Abteilung und Personalnummer.</p>
+        <p>Name, Firma, Abteilung, Personalnummer und Vorgesetzter.</p>
         <p>Diese Angaben erscheinen automatisch im PDF-Bericht. Leere Felder werden im Bericht ausgelassen.</p>
+        <p>Der Name und der Vorgesetzte werden zusätzlich unter den Unterschriftsfeldern im Bericht angezeigt.</p>
         <p>Die Einstellungen werden lokal im Browser gespeichert und beim Backup mit exportiert.</p>
 
         <h3>6. PDF / Bericht</h3>
@@ -72,7 +73,7 @@
         <p>• Alle Einträge</p>
         <p>• Ganzes Jahr</p>
         <p>• Bestimmter Monat</p>
-        <p>Der Bericht enthält Mitarbeiterdaten, Zeitraum, Saldo, Monatsübersicht, Einträge und Unterschriftsfelder.</p>
+        <p>Der Bericht enthält Mitarbeiterdaten, Zeitraum, Saldo, Monatsübersicht, Einträge und Unterschriftsfelder mit Namen.</p>
 
         <h3>7. Backup exportieren</h3>
         <p>Mit „Daten exportieren" sicherst du deine Einträge und Einstellungen als JSON-Datei.</p>
@@ -81,7 +82,7 @@
 
         <h3>8. Backup importieren</h3>
         <p>Beim Import wird die aktuelle Datenbank durch die Backup-Datei ersetzt.</p>
-        <p>Wenn das Backup Einstellungen enthält, werden Name, Firma, Abteilung und Personalnummer ebenfalls übernommen.</p>
+        <p>Wenn das Backup Einstellungen enthält, werden Name, Firma, Abteilung, Personalnummer und Vorgesetzter ebenfalls übernommen.</p>
 
         <h3>9. Datum und Anzeige</h3>
         <p>Intern speichert TimeBalance Datumswerte technisch im Format JJJJ-MM-TT, damit Filter und Backups stabil bleiben.</p>
@@ -91,7 +92,7 @@
         <p>TimeBalance kann als PWA auf dem iPhone genutzt werden.</p>
         <p>Nach Updates kann es nötig sein, die App einmal komplett zu schließen und neu zu öffnen, damit der neue Cache geladen wird.</p>
 
-        <p><b>Version:</b> 1.5</p>
+        <p><b>Version:</b> 1.6</p>
 
         <button onclick="hilfeAusblenden()">Schließen</button>
     </div>
@@ -233,6 +234,9 @@
 
             <label>Personalnummer</label>
             <input type="text" id="einstellungPersonalnummer" placeholder="optional">
+
+            <label>Vorgesetzter</label>
+            <input type="text" id="einstellungVorgesetzter" placeholder="optional">
 
             <button onclick="speichereEinstellungen()">Einstellungen speichern</button>
         </div>
