@@ -1,4 +1,4 @@
-const CACHE_NAME = "timebalance-v21";
+const CACHE_NAME = "timebalance-v22";
 
 const FILES_TO_CACHE = [
     "./",
