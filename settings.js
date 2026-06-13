@@ -310,4 +310,63 @@ function pdfAnsichtMitAuswahl() {
     fenster.document.close();
 }
 
+function legalBoxAnzeigen(titel, inhalt) {
+    let box = document.getElementById("legalBox");
+
+    if (!box) {
+        box = document.createElement("div");
+        box.id = "legalBox";
+        box.className = "card";
+        document.querySelector("h1").insertAdjacentElement("afterend", box);
+    }
+
+    box.innerHTML = `<h2>${titel}</h2>${inhalt}<button onclick="legalBoxSchliessen()">Schließen</button>`;
+    box.style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function legalBoxSchliessen() {
+    const box = document.getElementById("legalBox");
+    if (box) box.style.display = "none";
+}
+
+function impressumAnzeigen() {
+    legalBoxAnzeigen("Impressum", `
+        <p><b>Verantwortlich für den Inhalt:</b></p>
+        <p>Cengiz Spallek</p>
+        <p><b>E-Mail:</b><br><a href="mailto:c@spallek24.de">c@spallek24.de</a></p>
+        <p>TimeBalance ist eine private Anwendung zur lokalen Arbeitszeitverwaltung.</p>
+    `);
+}
+
+function datenschutzAnzeigen() {
+    legalBoxAnzeigen("Datenschutzerklärung", `
+        <p>TimeBalance verarbeitet keine Daten auf externen Servern.</p>
+        <p>Alle Arbeitszeitdaten, Einstellungen und Backups werden ausschließlich lokal auf dem Gerät des Nutzers gespeichert.</p>
+        <p>Es erfolgt keine Registrierung, keine Benutzerkontenverwaltung und keine automatische Übermittlung von Daten an Dritte.</p>
+        <p>Beim Export von Backups werden die Daten ausschließlich auf dem Gerät des Nutzers gespeichert oder durch den Nutzer selbst an einen Speicherort seiner Wahl übertragen.</p>
+        <p><b>Kontakt:</b><br><a href="mailto:c@spallek24.de">c@spallek24.de</a></p>
+    `);
+}
+
+function fuegeLegalButtonsEin() {
+    const hilfeButton = document.querySelector('button[onclick="hilfeAnzeigen()"]');
+
+    if (!hilfeButton || document.getElementById("impressumButton")) return;
+
+    const impressumButton = document.createElement("button");
+    impressumButton.id = "impressumButton";
+    impressumButton.textContent = "📄 Impressum";
+    impressumButton.onclick = impressumAnzeigen;
+
+    const datenschutzButton = document.createElement("button");
+    datenschutzButton.id = "datenschutzButton";
+    datenschutzButton.textContent = "🔒 Datenschutz";
+    datenschutzButton.onclick = datenschutzAnzeigen;
+
+    hilfeButton.insertAdjacentElement("afterend", datenschutzButton);
+    hilfeButton.insertAdjacentElement("afterend", impressumButton);
+}
+
 document.addEventListener("DOMContentLoaded", fuelleEinstellungenFormular);
+document.addEventListener("DOMContentLoaded", fuegeLegalButtonsEin);
