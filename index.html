@@ -74,6 +74,7 @@
         <p>• Ganzes Jahr</p>
         <p>• Bestimmter Monat</p>
         <p>Der Bericht enthält Mitarbeiterdaten, Zeitraum, Saldo, Monatsübersicht, Einträge und Unterschriftsfelder mit Namen.</p>
+        <p>Der vorgeschlagene PDF-Dateiname richtet sich nach der Auswahl, zum Beispiel TimeBalance-2026 oder TimeBalance-2026-06.</p>
 
         <h3>7. Backup exportieren</h3>
         <p>Mit „Daten exportieren" sicherst du deine Einträge und Einstellungen als JSON-Datei.</p>
@@ -81,8 +82,9 @@
         <p>Regelmäßige Backups sind wichtig, weil die App die Daten lokal im Browser bzw. in der PWA speichert.</p>
 
         <h3>8. Backup importieren</h3>
-        <p>Beim Import wird die aktuelle Datenbank durch die Backup-Datei ersetzt.</p>
-        <p>Wenn das Backup Einstellungen enthält, werden Name, Firma, Abteilung, Personalnummer und Vorgesetzter ebenfalls übernommen.</p>
+        <p>Beim Import zeigt TimeBalance vorher an, wie viele Einträge enthalten sind und ob Einstellungen im Backup vorhanden sind.</p>
+        <p>Vor dem Import wird automatisch ein Sicherheitsbackup der aktuellen Daten erstellt.</p>
+        <p>Wenn das Backup Einstellungen enthält, werden Name, Firma, Abteilung, Personalnummer und Vorgesetzter übernommen. Wenn keine Einstellungen enthalten sind, bleiben die aktuellen Einstellungen erhalten.</p>
 
         <h3>9. Datum und Anzeige</h3>
         <p>Intern speichert TimeBalance Datumswerte technisch im Format JJJJ-MM-TT, damit Filter und Backups stabil bleiben.</p>
@@ -92,7 +94,7 @@
         <p>TimeBalance kann als PWA auf dem iPhone genutzt werden.</p>
         <p>Nach Updates kann es nötig sein, die App einmal komplett zu schließen und neu zu öffnen, damit der neue Cache geladen wird.</p>
 
-        <p><b>Version:</b> 1.6</p>
+        <p><b>Version:</b> 1.7</p>
 
         <button onclick="hilfeAusblenden()">Schließen</button>
     </div>
@@ -222,6 +224,7 @@
         <div class="card">
             <h2>⚙️ Einstellungen</h2>
             <p>Diese Angaben erscheinen später im PDF-Bericht.</p>
+            <p><b>Version:</b> <span id="appVersion">1.7</span></p>
 
             <label>Name</label>
             <input type="text" id="einstellungName" placeholder="Vorname Nachname">
