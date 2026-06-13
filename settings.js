@@ -1,3 +1,5 @@
+const TIMEBALANCE_VERSION = "1.7";
+
 function ladeEinstellungen() {
     const einstellungen = JSON.parse(localStorage.getItem("timebalance_einstellungen")) || {};
 
@@ -31,46 +33,32 @@ function fuelleEinstellungenFormular() {
     const abteilung = document.getElementById("einstellungAbteilung");
     const personalnummer = document.getElementById("einstellungPersonalnummer");
     const vorgesetzter = document.getElementById("einstellungVorgesetzter");
+    const version = document.getElementById("appVersion");
 
-    if (!name || !firma || !abteilung || !personalnummer || !vorgesetzter) {
-        return;
+    if (name && firma && abteilung && personalnummer && vorgesetzter) {
+        name.value = einstellungen.name;
+        firma.value = einstellungen.firma;
+        abteilung.value = einstellungen.abteilung;
+        personalnummer.value = einstellungen.personalnummer;
+        vorgesetzter.value = einstellungen.vorgesetzter;
     }
 
-    name.value = einstellungen.name;
-    firma.value = einstellungen.firma;
-    abteilung.value = einstellungen.abteilung;
-    personalnummer.value = einstellungen.personalnummer;
-    vorgesetzter.value = einstellungen.vorgesetzter;
+    if (version) {
+        version.textContent = TIMEBALANCE_VERSION;
+    }
 }
 
 function erstelleMitarbeiterBlockHtml() {
     const einstellungen = ladeEinstellungen();
     const zeilen = [];
 
-    if (einstellungen.name) {
-        zeilen.push(`<p><b>Name:</b> ${htmlEscapen(einstellungen.name)}</p>`);
-    }
+    if (einstellungen.name) zeilen.push(`<p><b>Name:</b> ${htmlEscapen(einstellungen.name)}</p>`);
+    if (einstellungen.firma) zeilen.push(`<p><b>Firma:</b> ${htmlEscapen(einstellungen.firma)}</p>`);
+    if (einstellungen.abteilung) zeilen.push(`<p><b>Abteilung:</b> ${htmlEscapen(einstellungen.abteilung)}</p>`);
+    if (einstellungen.personalnummer) zeilen.push(`<p><b>Personalnummer:</b> ${htmlEscapen(einstellungen.personalnummer)}</p>`);
+    if (einstellungen.vorgesetzter) zeilen.push(`<p><b>Vorgesetzter:</b> ${htmlEscapen(einstellungen.vorgesetzter)}</p>`);
 
-    if (einstellungen.firma) {
-        zeilen.push(`<p><b>Firma:</b> ${htmlEscapen(einstellungen.firma)}</p>`);
-    }
-
-    if (einstellungen.abteilung) {
-        zeilen.push(`<p><b>Abteilung:</b> ${htmlEscapen(einstellungen.abteilung)}</p>`);
-    }
-
-    if (einstellungen.personalnummer) {
-        zeilen.push(`<p><b>Personalnummer:</b> ${htmlEscapen(einstellungen.personalnummer)}</p>`);
-    }
-
-    if (einstellungen.vorgesetzter) {
-        zeilen.push(`<p><b>Vorgesetzter:</b> ${htmlEscapen(einstellungen.vorgesetzter)}</p>`);
-    }
-
-    if (zeilen.length === 0) {
-        return "";
-    }
-
+    if (zeilen.length === 0) return "";
     return `<div class="mitarbeiter-block">${zeilen.join("")}</div>`;
 }
 
@@ -82,7 +70,6 @@ function erstelleUnterschriftenBlockHtml() {
     return `
         <div class="unterschriften">
             <p>Ort, Datum: __________________________________________</p>
-
             <div class="unterschriften-grid">
                 <div>
                     <p>__________________________________________</p>
@@ -99,25 +86,38 @@ function erstelleUnterschriftenBlockHtml() {
     `;
 }
 
-async function exportieren() {
-    const daten = {
+function erstelleBackupDaten() {
+    return {
         app: "TimeBalance",
-        version: "1.6",
+        version: TIMEBALANCE_VERSION,
         exportiertAm: new Date().toISOString(),
         einstellungen: ladeEinstellungen(),
         eintraege: eintraege
     };
+}
 
+function ladeJsonDateiHerunter(daten, dateiname) {
+    const json = JSON.stringify(daten, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = url;
+    a.download = dateiname;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+async function exportieren() {
+    const daten = erstelleBackupDaten();
     const json = JSON.stringify(daten, null, 2);
     const dateiname = `timebalance-backup-${new Date().toISOString().substring(0, 10)}.json`;
 
     if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         try {
-            const file = new File(
-                [json],
-                dateiname,
-                { type: "application/json" }
-            );
+            const file = new File([json], dateiname, { type: "application/json" });
 
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
                 await navigator.share({
@@ -131,26 +131,23 @@ async function exportieren() {
         }
     }
 
-    const blob = new Blob([json], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+    ladeJsonDateiHerunter(daten, dateiname);
+}
 
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = dateiname;
+function erstelleImportVorschau(daten) {
+    const anzahl = Array.isArray(daten.eintraege) ? daten.eintraege.length : 0;
+    const hatEinstellungen = !!daten.einstellungen;
+    const einstellungenText = hatEinstellungen
+        ? "Einstellungen vorhanden und werden übernommen."
+        : "Keine Einstellungen im Backup. Deine aktuellen Einstellungen bleiben erhalten.";
 
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-
-    URL.revokeObjectURL(url);
+    return `Backup-Inhalt:\n\nEinträge: ${anzahl}\n${einstellungenText}\n\nVor dem Import wird automatisch ein Sicherheitsbackup der aktuellen Daten erstellt.\n\nVorhandene Zeiteinträge werden ersetzt. Fortfahren?`;
 }
 
 function importieren(event) {
     const datei = event.target.files[0];
 
-    if (!datei) {
-        return;
-    }
+    if (!datei) return;
 
     const reader = new FileReader();
 
@@ -163,9 +160,13 @@ function importieren(event) {
                 return;
             }
 
-            if (!confirm("Vorhandene Daten werden ersetzt. Fortfahren?")) {
+            if (!confirm(erstelleImportVorschau(daten))) {
+                document.getElementById("importDatei").value = "";
                 return;
             }
+
+            const sicherungsName = `timebalance-sicherheitsbackup-vor-import-${new Date().toISOString().substring(0, 10)}.json`;
+            ladeJsonDateiHerunter(erstelleBackupDaten(), sicherungsName);
 
             eintraege = daten.eintraege;
 
@@ -178,7 +179,6 @@ function importieren(event) {
             anzeigen();
 
             document.getElementById("importDatei").value = "";
-
             alert("Backup wurde erfolgreich importiert.");
         } catch (fehler) {
             alert("Backup konnte nicht gelesen werden.");
@@ -188,12 +188,22 @@ function importieren(event) {
     reader.readAsText(datei);
 }
 
+function erstellePdfDateiname(auswahl) {
+    if (auswahl.titel.startsWith("Jahr ")) {
+        return `TimeBalance-${auswahl.titel.replace("Jahr ", "")}`;
+    }
+
+    if (auswahl.titel.startsWith("Monat ")) {
+        return `TimeBalance-${auswahl.titel.replace("Monat ", "")}`;
+    }
+
+    return "TimeBalance-alle-Eintraege";
+}
+
 function pdfAnsichtMitAuswahl() {
     const auswahl = gefiltertePdfEintraege();
 
-    if (!auswahl) {
-        return;
-    }
+    if (!auswahl) return;
 
     const gefiltert = auswahl.eintraege.sort((a, b) => a.datum.localeCompare(b.datum));
 
@@ -202,145 +212,61 @@ function pdfAnsichtMitAuswahl() {
         return;
     }
 
+    const pdfDateiname = erstellePdfDateiname(auswahl);
     let saldo = 0;
     let monate = {};
 
     gefiltert.forEach(e => {
         const wert = e.ueberstunden || 0;
         const monat = e.datum.substring(0, 7);
-
         saldo += wert;
-
-        if (!monate[monat]) {
-            monate[monat] = 0;
-        }
-
+        if (!monate[monat]) monate[monat] = 0;
         monate[monat] += wert;
     });
 
     let bericht = `
     <html>
     <head>
-        <title>TimeBalance Bericht</title>
+        <title>${htmlEscapen(pdfDateiname)}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
         <style>
-            body {
-                font-family: Arial, sans-serif;
-                padding: 20px;
-                color: #000;
-                background: #fff;
-            }
-
-            h1, h2 {
-                text-align: center;
-            }
-
-            .actions {
-                display: flex;
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-
-            button {
-                flex: 1;
-                padding: 12px;
-                font-size: 16px;
-                border: none;
-                border-radius: 8px;
-                background: #007aff;
-                color: white;
-            }
-
-            .mitarbeiter-block {
-                border: 1px solid #ccc;
-                padding: 12px;
-                margin: 15px 0;
-                background: #f8f8f8;
-            }
-
-            .mitarbeiter-block p {
-                margin: 4px 0;
-            }
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 10px;
-            }
-
-            th, td {
-                border: 1px solid #ccc;
-                padding: 8px;
-                text-align: left;
-            }
-
-            th {
-                background: #f0f0f0;
-            }
-
-            .plus {
-                color: green;
-                font-weight: bold;
-            }
-
-            .minus {
-                color: red;
-                font-weight: bold;
-            }
-
-            .unterschriften {
-                margin-top: 50px;
-                page-break-inside: avoid;
-            }
-
-            .unterschriften-grid {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 40px;
-                margin-top: 40px;
-            }
-
-            .unterschrift-name {
-                margin: 6px 0 0 0;
-                font-weight: bold;
-            }
-
-            @media print {
-                .actions {
-                    display: none;
-                }
-            }
+            body { font-family: Arial, sans-serif; padding: 20px; color: #000; background: #fff; }
+            h1, h2 { text-align: center; }
+            .actions { display: flex; gap: 10px; margin-bottom: 20px; }
+            button { flex: 1; padding: 12px; font-size: 16px; border: none; border-radius: 8px; background: #007aff; color: white; }
+            .mitarbeiter-block { border: 1px solid #ccc; padding: 12px; margin: 15px 0; background: #f8f8f8; }
+            .mitarbeiter-block p { margin: 4px 0; }
+            table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+            th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+            th { background: #f0f0f0; }
+            .plus { color: green; font-weight: bold; }
+            .minus { color: red; font-weight: bold; }
+            .unterschriften { margin-top: 50px; page-break-inside: avoid; }
+            .unterschriften-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+            .unterschrift-name { margin: 6px 0 0 0; font-weight: bold; }
+            @media print { .actions { display: none; } }
         </style>
     </head>
-
     <body>
-
         <div class="actions">
             <button onclick="location.href='index.html'">⬅️ Zurück zur App</button>
             <button onclick="window.print()">🖨️ Drucken / PDF</button>
         </div>
-
         <h1>TimeBalance Bericht</h1>
         ${erstelleMitarbeiterBlockHtml()}
         <h2>${htmlEscapen(auswahl.titel)}</h2>
         <h2>Saldo im Zeitraum: ${formatZeit(saldo)}</h2>
-
         <h2>Monatsübersicht</h2>
     `;
 
     Object.keys(monate).sort().forEach(monat => {
         const wert = monate[monat];
         const klasse = wert >= 0 ? "plus" : "minus";
-
-        bericht += `
-            <p><b>${formatMonatDeutsch(monat)}</b>: <span class="${klasse}">${formatZeit(wert)}</span></p>
-        `;
+        bericht += `<p><b>${formatMonatDeutsch(monat)}</b>: <span class="${klasse}">${formatZeit(wert)}</span></p>`;
     });
 
     bericht += `
         <h2>Einträge</h2>
-
         <table>
             <tr>
                 <th>Datum</th>
@@ -371,16 +297,14 @@ function pdfAnsichtMitAuswahl() {
 
     bericht += `
         </table>
-
         <p>Erstellt am: ${new Date().toLocaleString("de-DE")}</p>
+        <p><b>Vorgeschlagener PDF-Dateiname:</b> ${htmlEscapen(pdfDateiname)}.pdf</p>
         ${erstelleUnterschriftenBlockHtml()}
-
     </body>
     </html>
     `;
 
     const fenster = window.open("", "_self");
-
     fenster.document.open();
     fenster.document.write(bericht);
     fenster.document.close();
